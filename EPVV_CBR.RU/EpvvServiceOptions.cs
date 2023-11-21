@@ -9,25 +9,10 @@ namespace EPVV_CBR.RU
     /// </summary>
     public class EpvvServiceOptions
     {
-        private static readonly string _testPortalUrl;
-        private static readonly string _portalUrl;
+        private const string _testPortalUrl = "https://portal5test.cbr.ru/back/rapi2/";
+        private const string _portalUrl = "https://portal5.cbr.ru/back/rapi2/";
 
         private static bool _isTestPortal;
-
-        static EpvvServiceOptions()
-        {
-            var pathSettings = "appsettings.json";
-
-            using (var sr = new StreamReader(pathSettings))
-            {
-                var data = sr.ReadToEnd();
-
-                var appSettings = JsonConvert.DeserializeObject<AppSettings>(data);
-
-                _testPortalUrl = appSettings.TestPortalUrl;
-                _portalUrl = appSettings.PortalUrl;
-            }
-        }
 
         /// <summary>
         /// 
