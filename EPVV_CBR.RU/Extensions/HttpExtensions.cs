@@ -12,12 +12,21 @@ namespace EPVV_CBR.RU.Extensions
             return message;
         }
 
-        public static async Task<HttpResponseMessage> GetResponse(this HttpClient client, string credentials, string endpoint, HttpMethod method, HttpContent? content = null, ContentType? contentType = null, long? contentLength = null, ContentRangeHeaderValue? contentRange = null)
+        public static async Task<HttpResponseMessage> GetResponse(
+            this HttpClient client, 
+            string credentials, 
+            string endpoint, 
+            HttpMethod method, 
+            HttpContent? content = null, 
+            ContentType? contentType = null, 
+            long? contentLength = null, 
+            ContentRangeHeaderValue? contentRange = null)
         {
             var uri = $"{client.BaseAddress}/{endpoint}";
 
             using (var request = new HttpRequestMessage(method, uri))
             {
+                //request.Headers.TryAddWithoutValidation("Accept", "application/json");
                 request.Headers.TryAddWithoutValidation("Authorization", $"Basic {credentials}");
 
                 if (contentType != null)
