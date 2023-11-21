@@ -3,19 +3,20 @@ using System.Net.Http.Headers;
 
 namespace EPVV_CBR.RU
 {
-    public class WebRequestCB : IWebRequestCB
+    public class EpvvService : IEpvvService
     {
-        private readonly WebRequestOptions _options;
+        private readonly EpvvServiceOptions _options;
 
         private readonly HttpClient _httpClient;
 
-        public WebRequestCB(WebRequestOptions options, HttpClient? httpClient = default)
+        public EpvvService(EpvvServiceOptions options, HttpClient? httpClient = default)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
             _httpClient = httpClient ?? new HttpClient() { BaseAddress = new Uri(_options.BaseAddress) };
         }
 
-        public void DisposeClient() => _httpClient.Dispose();
+        /// <inheritdoc/>
+        public void Dispose() => _httpClient.Dispose();
 
         public async Task<ResponseViewModel<ResponseMessageBody>> PostMessages(string data)
         {

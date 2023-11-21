@@ -5,7 +5,7 @@ namespace EPVV_CBR.RU
     /// <summary>
     /// 
     /// </summary>
-    public class WebRequestOptions
+    public class EpvvServiceOptions
     {
         /// <summary>
         /// 
@@ -20,20 +20,18 @@ namespace EPVV_CBR.RU
         /// 
         /// </summary>
         /// <param name="baseAddress"></param>
-        /// <param name="username">Имя пользователя</param>
-        /// <param name="password"></param>
-        public WebRequestOptions(string baseAddress, string username, string password)
-        {
-            BaseAddress = baseAddress;
-            Credentials = GetEncodeCredentials(username, password);
-        }
+        /// <param name="username">Имя учетной записи портала portal5.cbr.ru (portal5test.cbr.ru)</param>
+        /// <param name="password">Пароль от учетной записи</param>
+        public EpvvServiceOptions(string baseAddress, string username, string password) 
+            : this (baseAddress, GetEncodeCredentials(username, password))
+        { }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="baseAddress"></param>
         /// <param name="credentials">Зашифрованные аутентификационные данные для формата Base</param>
-        public WebRequestOptions(string baseAddress, string credentials) 
+        public EpvvServiceOptions(string baseAddress, string credentials) 
         {
             BaseAddress = baseAddress;
             Credentials = credentials;

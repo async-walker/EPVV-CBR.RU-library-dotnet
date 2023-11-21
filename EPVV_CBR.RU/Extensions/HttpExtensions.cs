@@ -3,7 +3,7 @@ using System.Net.Http.Headers;
 
 namespace EPVV_CBR.RU.Extensions
 {
-    public static class HttpExtensions
+    internal static class HttpExtensions
     {
         public static async Task<string> ReadHttpResponseMessage(this HttpResponseMessage responseMessage)
         {
