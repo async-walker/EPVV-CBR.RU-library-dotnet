@@ -1,6 +1,6 @@
 ﻿namespace EPVV_CBR.RU.Data.Enums
 {
-    public enum MessageStatus : byte
+    public enum MessageStatus
     {
         Draft,
         Sent,
