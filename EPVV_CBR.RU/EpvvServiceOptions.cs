@@ -1,58 +1,64 @@
 ﻿using EPVV_CBR.RU.Data.Enums;
 using EPVV_CBR.RU.Extensions;
-using Newtonsoft.Json;
 
 namespace EPVV_CBR.RU
 {
     /// <summary>
-    /// 
+    /// Набор настроек для сервиса взаимодействия с ЕПВВ ЦБ
     /// </summary>
     public class EpvvServiceOptions
     {
-        private const string _testPortalUrl = "https://portal5test.cbr.ru/back/rapi2/";
-        private const string _portalUrl = "https://portal5.cbr.ru/back/rapi2/";
+        /// <summary>
+        /// Адрес тестового портала
+        /// </summary>
+        public const string TestPortalUrl = "https://portal5test.cbr.ru/back/rapi2";
+        /// <summary>
+        /// Адрес портала
+        /// </summary>
+        public const string PortalUrl = "https://portal5.cbr.ru/back/rapi2";
 
         private static bool _isTestPortal;
 
         /// <summary>
-        /// 
+        /// Базовый адрес в зависимости от выбранного типа портала
         /// </summary>
         public string BaseAddress 
         {
             get
             {
                 if (_isTestPortal)
-                    return _testPortalUrl;
-                else return _portalUrl;
+                    return TestPortalUrl;
+                else return PortalUrl;
             } 
         }
         /// <summary>
-        /// 
+        /// Зашифрованные учетные данные (Basic auth)
         /// </summary>
         public string Credentials { get; }
         /// <summary>
-        /// 
+        /// <para>Тип репозитория, в который будут загружаться файлы</para>
+        /// <para>По умолчанию <b>http</b></para>
         /// </summary>
         public RepositoryType RepositoryType { get; }
 
         /// <summary>
-        /// 
+        /// Инициализация настроек для сервиса
         /// </summary>
-        /// <param name="testPortal"></param>
+        /// <param name="testPortal">Указать, использовать ли тестовый портал</param>
         /// <param name="username">Имя учетной записи портала portal5.cbr.ru (portal5test.cbr.ru)</param>
         /// <param name="password">Пароль от учетной записи</param>
-        /// <param name="repositoryType">Тип загрузки файлов в репозиторий ЦБ</param>
-        public EpvvServiceOptions(bool testPortal, string username, string password, RepositoryType repositoryType = RepositoryType.http)
-            : this(testPortal, GetEncodeCredentials(username, password), repositoryType)
+        /// <param name="repositoryType">Тип загрузки файлов в репозиторий</param>
+        public EpvvServiceOptions(string username, string password, bool testPortal = false, RepositoryType repositoryType = RepositoryType.http)
+            : this(GetEncodeCredentials(username, password), testPortal, repositoryType)
         { }
 
         /// <summary>
-        /// 
+        /// Инициализация настроек для сервиса
         /// </summary>
-        /// <param name="testPortal"></param>
+        /// <param name="testPortal">Указать, использовать ли тестовый портал</param>
         /// <param name="credentials">Зашифрованные аутентификационные данные для формата Base</param>
-        /// <param name="repositoryType"></param>
-        public EpvvServiceOptions(bool testPortal, string credentials, RepositoryType repositoryType)
+        /// <param name="repositoryType">Тип загрузки файлов в репозиторий</param>
+        public EpvvServiceOptions(string credentials, bool testPortal = false, RepositoryType repositoryType = RepositoryType.http)
         {
             _isTestPortal = testPortal;
             Credentials = credentials;
@@ -64,12 +70,6 @@ namespace EPVV_CBR.RU
             var template = $"{username}:{password}";
 
             return template.EncodeToBase64();
-        }
-
-        private struct AppSettings
-        {
-            public string TestPortalUrl { get; set; }
-            public string PortalUrl { get; set;}
         }
     }
 }

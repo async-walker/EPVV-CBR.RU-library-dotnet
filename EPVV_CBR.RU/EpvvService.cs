@@ -1,14 +1,26 @@
-﻿using EPVV_CBR.RU.Extensions;
+﻿using EPVV_CBR.RU.Data.Enums;
+using EPVV_CBR.RU.Extensions;
+using EPVV_CBR.RU.Models;
+using Newtonsoft.Json;
+using System.Net;
 using System.Net.Http.Headers;
 
 namespace EPVV_CBR.RU
 {
+    /// <summary>
+    /// Реализация интерфейса сервиса взаимодествия с ЕПВВ
+    /// </summary>
     public class EpvvService : IEpvvService
     {
         private readonly EpvvServiceOptions _options;
-
         private readonly HttpClient _httpClient;
 
+        /// <summary>
+        /// Инициализация сервиса взаимодействия с ЕПВВ
+        /// </summary>
+        /// <param name="options">Настройки сервиса</param>
+        /// <param name="httpClient">Экземпляр HttpClient</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public EpvvService(EpvvServiceOptions options, HttpClient? httpClient = default)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
@@ -18,8 +30,10 @@ namespace EPVV_CBR.RU
         /// <inheritdoc/>
         public void Dispose() => _httpClient.Dispose();
 
-        public async Task<ResponseViewModel<ResponseMessageBody>> PostMessages(string data)
+        /// <inheritdoc/>
+        public async Task<ResponseViewModel<ResponseMessageBody>> CreateDraftMessage(RequestMessageBody messageBody)
         {
+            var data = JsonConvert.SerializeObject(messageBody);
             var content = new StringContent(data);
             var endpoint = "messages";
 
@@ -31,25 +45,24 @@ namespace EPVV_CBR.RU
                 contentType: ContentType.ApplicationJson);
 
             if (!response.IsSuccessStatusCode)
-                throw new HttpRequestException($"При создании черновика произошла ошибка (Код {(int)response.StatusCode})");
+                await response.NotSuccesStatusCodeCatcher(
+                    "При создании черновика сообщения произошла ошибка!");
 
-            var message = await response.ReadHttpResponseMessage();
+            var message = await response.ReadContent();
             var responseMessageBody = message.DeserializeFromJson<ResponseMessageBody>();
-
-            var template = $"Черновик сообщения {responseMessageBody!.Id} успешно создан [{DateTime.Now}]\n\n";
 
             var responseViewModel = new ResponseViewModel<ResponseMessageBody>(
                 responseModel: responseMessageBody,
                 statusCode: response.StatusCode,
-                message: template);
+                message: "Черновик сообщения успешно создан");
 
             return responseViewModel;
         }
-
-        public async Task<ResponseViewModel<List<SessionInfo>>> PostMessagesCreateUploadSession(ResponseMessageBody messageResponse)
+        
+        /// <inheritdoc/>
+        public async Task<ResponseViewModel<List<SessionInfo>>> CreateUploadSessions(ResponseMessageBody messageResponse)
         {
             var uploadsData = new List<SessionInfo>();
-            var template = string.Empty;
 
             foreach (var file in messageResponse.Files)
             {
@@ -67,31 +80,29 @@ namespace EPVV_CBR.RU
                     contentType: ContentType.ApplicationJson);
 
                 if (!response.IsSuccessStatusCode)
-                    throw new HttpRequestException($"При создании сессии произошла ошибка (Код {(int)response.StatusCode})");
+                    await response.NotSuccesStatusCodeCatcher(
+                        "При создании сессии отправки файлов произошла ошибка!");
 
-                var message = await response.ReadHttpResponseMessage();
+                var message = await response.ReadContent();
                 var sessionInfo = message.DeserializeFromJson<SessionInfo>();
+
                 sessionInfo!.MessageFile = file;
 
                 uploadsData.Add(sessionInfo);
-
-                template += ($"Сессия для отправки {file.Name} успешно создана\n");
             }
-
-            template += $"Сессии для отправки файлов сообщения успешно созданы [{DateTime.Now}]\n\n";
 
             var responseViewModel = new ResponseViewModel<List<SessionInfo>>(
                 responseModel: uploadsData,
-                statusCode: System.Net.HttpStatusCode.Created,
-                message: template);
+                statusCode: HttpStatusCode.Created,
+                message: "Сессии для отправки файлов сообщения успешно созданы");
 
             return responseViewModel;
         }
 
-        public async Task<ResponseViewModel<List<UploadedFile>>> PutMessages(List<SessionInfo> sessions, string folderPath)
+        /// <inheritdoc/>
+        public async Task<ResponseViewModel<List<UploadedFile>>> UploadFiles(List<SessionInfo> sessions, string folderPath)
         {
             var uploadedFiles = new List<UploadedFile>();
-            var template = string.Empty;
 
             foreach (var session in sessions)
             {
@@ -115,28 +126,26 @@ namespace EPVV_CBR.RU
                         contentRange: contentRange);
 
                     if (!response.IsSuccessStatusCode)
-                        throw new HttpRequestException($"При загрузке файла в репозиторий произошла ошибка (Код {(int)response.StatusCode})");
+                        await response.NotSuccesStatusCodeCatcher(
+                            "Во время загрузки файлов на сервер произошла ошибка!");
 
-                    var message = await response.ReadHttpResponseMessage();
+                    var message = await response.ReadContent();
                     var uploadedFile = message.DeserializeFromJson<UploadedFile>();
 
                     uploadedFiles.Add(uploadedFile!);
-
-                    template += ($"Файл {session.MessageFile.Name} успешно загружен в репозиторий\n");
                 }
             }
 
-            template += $"Файлы сообщения успешно загружены в репозиторий [{DateTime.Now}]\n\n";
-
             var responseViewModel = new ResponseViewModel<List<UploadedFile>>(
                 responseModel: uploadedFiles,
-                statusCode: System.Net.HttpStatusCode.Created,
-                message: template);
+                statusCode: HttpStatusCode.Created,
+                message: "Файлы сообщения успешно загружены в репозиторий");
 
             return responseViewModel;
         }
 
-        public async Task<ResponseViewModel<object>> PostConfirmSendMessages(string messageId)
+        /// <inheritdoc/>
+        public async Task<ResponseViewModel> ConfirmSendMessage(string messageId)
         {
             var endpoint = $"messages/{messageId}";
 
@@ -145,22 +154,18 @@ namespace EPVV_CBR.RU
                 endpoint: endpoint,
                 method: HttpMethod.Post);
 
-            if (!response.IsSuccessStatusCode && (int)response.StatusCode != 500)
-                throw new HttpRequestException($"Сообщение не было отправлено на сервер (Код {(int)response.StatusCode})");
+            if (!response.IsSuccessStatusCode)
+                await response.NotSuccesStatusCodeCatcher(
+                    "При подтверждении отправки сообщения произошла ошибка!");
 
-            var template = $"Сообщение {messageId} успешно отправлено на сервер ЦБ [{DateTime.Now}]\n";
-            
-            if ((int)response.StatusCode is 500)
-                template = "Сообщение имеет статусный код '500', вероятней всего, сервер не отвечает, но сообщение загружено.. проверка статуса\n";
-
-            var responseViewModel = new ResponseViewModel<object>(
-                responseModel: null,
+            var responseViewModel = new ResponseViewModel(
                 statusCode: response.StatusCode,
-                message: template);
+                message: "Подтверждение отправки сообщения завершено успешно");
 
             return responseViewModel;
         }
 
+        /// <inheritdoc/>
         public async Task<ResponseViewModel<List<MessageInfo>>> GetMessagesInfoByParameters(string[] parametersQuery)
         {
             var endpoint = $"messages?" + string.Join("&", parametersQuery);
@@ -170,13 +175,12 @@ namespace EPVV_CBR.RU
                 endpoint: endpoint,
                 method: HttpMethod.Get);
 
-            var message = await response.ReadHttpResponseMessage();
-
             if (!response.IsSuccessStatusCode)
-                throw new HttpRequestException($"Некорректный ответ сервера (Код {(int)response.StatusCode})");
+                await response.NotSuccesStatusCodeCatcher(
+                    "При поиске сообщений по параметрам произошла ошибка!");
 
+            var message = await response.ReadContent();
             var messagesInfo = message.DeserializeFromJson<List<MessageInfo>>();
-
             var responseViewModel = new ResponseViewModel<List<MessageInfo>>(
                 responseModel: messagesInfo,
                 statusCode: response.StatusCode);
@@ -184,7 +188,8 @@ namespace EPVV_CBR.RU
             return responseViewModel;
         }
 
-        public async Task<ResponseViewModel<List<string>>> GetDownloadFilesFromMessage(MessageInfo messageInfo, string directory)
+        /// <inheritdoc/>
+        public async Task<ResponseViewModel<List<string>>> DownloadFilesFromRepository(MessageInfo messageInfo, string directory)
         {
             var filesPath = new List<string>();
 
@@ -198,7 +203,8 @@ namespace EPVV_CBR.RU
                     method: HttpMethod.Get);
 
                 if (!response.IsSuccessStatusCode)
-                    throw new HttpRequestException($"Некорректный ответ сервера: (Код {(int)response.StatusCode})");
+                    await response.NotSuccesStatusCodeCatcher(
+                        "При скачивании файлов из репозитория произошла ошибка!");
 
                 var path = @$"{directory}\{file.Name}";
 
@@ -209,11 +215,12 @@ namespace EPVV_CBR.RU
 
             var responseViewModel = new ResponseViewModel<List<string>>(
                 responseModel: filesPath,
-                statusCode: System.Net.HttpStatusCode.OK);
+                statusCode: HttpStatusCode.OK);
 
             return responseViewModel;
         }
 
+        /// <inheritdoc/>
         public async Task<ResponseViewModel<MessageInfo>> GetMessageInfoById(string messageId)
         {
             var endpoint = $"messages/{messageId}";
@@ -223,16 +230,14 @@ namespace EPVV_CBR.RU
                 endpoint: endpoint,
                 method: HttpMethod.Get);
 
-            var message = await response.ReadHttpResponseMessage();
-
             if (!response.IsSuccessStatusCode)
-                throw new HttpRequestException($"Некорректный ответ сервера: (Код: {(int)response.StatusCode})");
+                await response.NotSuccesStatusCodeCatcher("При получении информации о сообщения по его ID произошла ошибка!");
 
+            var message = await response.ReadContent();
             var messageInfo = message.DeserializeFromJson<MessageInfo>();
-
             var responseViewModel = new ResponseViewModel<MessageInfo>(
                 responseModel: messageInfo,
-                statusCode: System.Net.HttpStatusCode.OK);
+                statusCode: response.StatusCode);
 
             return responseViewModel;
         }
