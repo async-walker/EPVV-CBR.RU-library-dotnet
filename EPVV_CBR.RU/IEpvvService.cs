@@ -13,14 +13,14 @@ namespace EPVV_CBR.RU
         /// </summary>
         /// <param name="messageBody">Передаваемое тело сообщения</param>
         /// <returns></returns>
-        Task<ResponseViewModel<ResponseMessageBody>> CreateDraftMessage(RequestMessageBody messageBody);
+        Task<ResponseMessageBody> CreateDraftMessage(RequestMessageBody messageBody);
         /// <summary>
         /// <para>Создание сессий отправки</para>
         /// <para>POST: /messages{messageId}/files/{fileId}/createUploadSession</para>
         /// </summary>
         /// <param name="responseMessageBody"></param>
         /// <returns></returns>
-        Task<ResponseViewModel<List<SessionInfo>>> CreateUploadSessions(ResponseMessageBody responseMessageBody);
+        Task<List<SessionInfo>> CreateUploadSessions(ResponseMessageBody responseMessageBody);
         /// <summary>
         /// <para>Загрузка файлов на сервер</para>
         /// <para>PUT: /messages/{messageId}/files/{fileId}</para>
@@ -28,14 +28,14 @@ namespace EPVV_CBR.RU
         /// <param name="sessions"></param>
         /// <param name="folderPath"></param>
         /// <returns></returns>
-        Task<ResponseViewModel<List<UploadedFile>>> UploadFiles(List<SessionInfo> sessions, string folderPath);
+        Task<List<UploadedFile>> UploadFiles(List<SessionInfo> sessions, string folderPath);
         /// <summary>
         /// <para>Подтверждение отправки сообщения на сервер</para>
         /// <para>POST: /messages/{messageId}</para>
         /// </summary>
         /// <param name="messageId">ID сообщения</param>
         /// <returns></returns>
-        Task<ResponseViewModel> ConfirmSendMessage(string messageId);
+        Task ConfirmSendMessage(string messageId);
         /// <summary>
         /// <para>Скачивание файлов из репозитория сообщения</para>
         /// <para>GET: /messages/{messageId}/files/{fileId}/download</para>
@@ -43,20 +43,20 @@ namespace EPVV_CBR.RU
         /// <param name="messageInfo">Информация о сообщении</param>
         /// <param name="directory">Директория, куда следует сохранить скачиваемые файлы</param>
         /// <returns></returns>
-        Task<ResponseViewModel<List<string>>> DownloadFilesFromRepository(MessageInfo messageInfo, string directory);
+        Task<List<string>> DownloadFilesFromRepository(MessageInfo messageInfo, string directory);
         /// <summary>
         /// <para>Получение информации о сообщениях по параметрам</para>
         /// <para>GET: /messages?[params]</para>
         /// </summary>
         /// <param name="parametersQuery">Критерии поиска сообщений</param>
         /// <returns></returns>
-        Task<ResponseViewModel<List<MessageInfo>>> GetMessagesInfoByParameters(string[] parametersQuery);
+        Task<List<MessageInfo>> GetMessagesInfoByParameters(string[] parametersQuery);
         /// <summary>
         /// <para>Получение информации о сообщении по его ID</para>
         /// <para>GET: /messages/{messageId}</para>
         /// </summary>
         /// <param name="messageId">ID сообщения</param>
         /// <returns></returns>
-        Task<ResponseViewModel<MessageInfo>> GetMessageInfoById(string messageId);
+        Task<MessageInfo> GetMessageInfoById(string messageId);
     }
 }
