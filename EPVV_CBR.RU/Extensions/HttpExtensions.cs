@@ -1,11 +1,12 @@
 ﻿using EPVV_CBR.RU.Data.Enums;
+using EPVV_CBR.RU.Models;
 using System.Net.Http.Headers;
 
 namespace EPVV_CBR.RU.Extensions
 {
     internal static class HttpExtensions
     {
-        public static async Task<string> ReadHttpResponseMessage(this HttpResponseMessage responseMessage)
+        public static async Task<string> ReadContent(this HttpResponseMessage responseMessage)
         {
             var message = await responseMessage.Content.ReadAsStringAsync();
 
@@ -47,6 +48,21 @@ namespace EPVV_CBR.RU.Extensions
 
                 return response;
             }
+        }
+
+        public static async Task NotSuccesStatusCodeCatcher(this HttpResponseMessage responseMessage, string message)
+        {
+            var messageContent = await responseMessage.ReadContent();
+
+            var error = messageContent.DeserializeFromJson<ErrorResponse>()
+                    ?? throw new HttpRequestException(
+                        $"Возникла внутренняя ошибка - {responseMessage.StatusCode} ({(int)responseMessage.StatusCode})");
+
+            throw new HttpRequestException(
+                $"{message}\n\n" +
+                $"Код: {error.ErrorCode} ({error.HTTPStatus})\n" +
+                $"Описание: {error.ErrorMessage}\n" +
+                $"Дополнительно: {error.MoreInfo}");
         }
 
         private static readonly Dictionary<ContentType?, string> ContentTypeDescription = new()
