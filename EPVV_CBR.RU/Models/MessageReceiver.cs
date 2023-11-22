@@ -1,6 +1,6 @@
 ﻿namespace EPVV_CBR.RU.Models
 {
-    public class MessageReciever
+    public class MessageReceiver
     {
         public string Inn { get; set; }
         public string Ogrn { get; set; }
