@@ -1,4 +1,4 @@
-﻿using EPVV_CBR.RU.Data.Enums;
+﻿using EPVV_CBR.RU.Enums;
 using EPVV_CBR.RU.Extensions;
 
 namespace EPVV_CBR.RU
