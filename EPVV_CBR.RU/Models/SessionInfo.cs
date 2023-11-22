@@ -9,6 +9,6 @@ namespace EPVV_CBR.RU.Models
         [JsonProperty(nameof(ExpirationDateTime))]
         public string ExpirationDateTime { get; set; }
         [JsonIgnore()]
-        public ResponseMessageFile MessageFile { get; set; }
+        public ReceivedFile MessageFile { get; set; }
     }
 }

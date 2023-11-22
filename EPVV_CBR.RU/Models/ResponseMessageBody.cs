@@ -1,33 +1,71 @@
-﻿namespace EPVV_CBR.RU.Models
+﻿using EPVV_CBR.RU.Data.Enums;
+
+namespace EPVV_CBR.RU.Models
 {
+    /// <summary>
+    /// Репрезентация десереализованного ответа тела сообщения
+    /// </summary>
     public class ResponseMessageBody
     {
-        public string Id { get; set; }
-        public string CorrelationId { get; set; }
-        public string GroupId { get; set; }
-        public string Type { get; set; }
-        public string Title { get; set; }
-        public string Text { get; set; }
-        public string CreationDate { get; set; }
-        public string UpdatedDate { get; set; }
-        public string Status { get; set; }
-        public string TaskName { get; set; }
-        public string RegNumber { get; set; }
+        /// <summary>
+        /// Уникальный идентификатор сообщения в формате UUID [16]
+        /// </summary>
+        public string Id { get; set; } = default!;
+        /// <summary>
+        /// Идентификатор корреляции сообщения в формате UUID [16]
+        /// </summary>
+        public string CorrelationId { get; set; } = default!;
+        /// <summary>
+        /// Идентификатор группы сообщений в формате UUID [16]
+        /// </summary>
+        public string GroupId { get; set; } = default!;
+        /// <summary>
+        /// Тип сообщения 
+        /// </summary>
+        public MessageType Type { get; set; }
+        /// <summary>
+        /// Название сообщения
+        /// </summary>
+        public string Title { get; set; } = default!;
+        /// <summary>
+        /// Текст сообщения
+        /// </summary>
+        public string Text { get; set; } = default!;
+        /// <summary>
+        /// Дата создания сообщения (ГОСТ ISO 8601-2001 по маске «yyyy-MM-dd’T’HH:mm:ss’Z’»)
+        /// </summary>
+        public string CreationDate { get; set; } = default!;
+        /// <summary>
+        /// Дата последнего изменения статуса сообщения (ГОСТ ISO 8601-2001 по маске «yyyy-MM-dd’T’HH:mm:ss’Z’»)
+        /// </summary>
+        public string UpdatedDate { get; set; } = default!;
+        /// <summary>
+        /// Статус сообщения 
+        /// </summary>
+        public MessageStatus Status { get; set; }
+        /// <summary>
+        /// Наименование задачи
+        /// </summary>
+        public string TaskName { get; set; } = default!;
+        /// <summary>
+        /// Регистрационный номер
+        /// </summary>
+        public string RegNumber { get; set; } = default!;
+        /// <summary>
+        /// Общий размер сообщения в байтах
+        /// </summary>
         public long TotalSize { get; set; }
-        public Sender Sender { get; set; }
-        public List<ResponseMessageFile> Files { get; set; }
-        public List<Receipt> Receipts { get; set; }
-    }
-
-    public class ResponseMessageFile
-    {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public string? Description { get; set; }
-        public string FileType { get; set; }
-        public bool Encrypted { get; set; }
-        public string? SignedFile { get; set; }
-        public long Size { get; set; }
-        public List<ResponseRepositoryInfo> RepositoryInfo { get; set; }
+        /// <summary>
+        /// Информация об отправителе
+        /// </summary>
+        public Sender Sender { get; set; } = default!;
+        /// <summary>
+        /// Файлы, включенные в сообщение
+        /// </summary>
+        public List<ReceivedFile> Files { get; set; } = default!;
+        /// <summary>
+        /// Квитанции, полученные в ответ на сообщение
+        /// </summary>
+        public List<Receipt> Receipts { get; set; } = default!;
     }
 }

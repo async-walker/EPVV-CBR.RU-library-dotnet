@@ -8,6 +8,6 @@
         public bool Encrypted { get; set; }
         public string SignedFile { get; set; }
         public long Size { get; set; }
-        public List<RepositoryInfo> RepositoryInfo { get; set; }
+        public List<RepositoryInfoO> RepositoryInfo { get; set; }
     }
 }

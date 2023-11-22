@@ -1,16 +1,40 @@
-﻿namespace EPVV_CBR.RU.Models
-{
-    public class ResponseRepositoryInfo : RepositoryInfo
-    {
-        public string CheckSum { get; set; }
-        public string CheckSumType { get; set; }
-    }
+﻿using System.Text.Json.Serialization;
 
+namespace EPVV_CBR.RU.Models
+{
+    /// <summary>
+    /// Репрезентация информации о характеристиках репозитория, в который будет загружен файл
+    /// </summary>
     public class RepositoryInfo
     {
+        /// <summary>
+        /// Инициализация модели информации о характеристиках репозитория, в который будет загружен файл
+        /// </summary>
+        /// <param name="checkSum">Контрольная сумма файла, необходимая для контроля его целостности. Берется пользователем из «манифеста», формируемого ТПС «Aspera» после загрузки файла</param>
+        /// <param name="checkSumType">Алгоритм расчёта контрольной суммы файла, в зависимости от установок ТПС «Aspera». Берется пользователем из «манифеста», формируемого ТПС «Aspera» после загрузки файла</param>
+        /// <param name="path">Путь к файлу относительно хранилища пользователя в ТПС «Аспера», включая имя файла. Имена файлов должны быть в виде GUID без расширения. Имя генерирует сам пользователь. Берется пользователем из «манифеста», формируемого ТПС «Aspera» после загрузки файла</param>
+        [JsonConstructor]
+        public RepositoryInfo(
+            string checkSum,
+            string checkSumType,
+            string path)
+        {
+            CheckSum = checkSum;
+            CheckSumType = checkSumType;
+            Path = path;
+        }
+
+        /// <summary>
+        /// Контрольная сумма файла, необходимая для контроля его целостности. Берется пользователем из «манифеста», формируемого ТПС «Aspera» после загрузки файла
+        /// </summary>
+        public string CheckSum { get; set; }
+        /// <summary>
+        /// Алгоритм расчёта контрольной суммы файла, в зависимости от установок ТПС «Aspera». Берется пользователем из «манифеста», формируемого ТПС «Aspera» после загрузки файла
+        /// </summary>
+        public string CheckSumType { get; set; }
+        /// <summary>
+        /// Путь к файлу относительно хранилища пользователя в ТПС «Аспера», включая имя файла. Имена файлов должны быть в виде GUID без расширения. Имя генерирует сам пользователь. Берется пользователем из «манифеста», формируемого ТПС «Aspera» после загрузки файла
+        /// </summary>
         public string Path { get; set; }
-        public string Host { get; set; }
-        public int Port { get; set; }
-        public string RepositoryType { get; set; }
     }
 }

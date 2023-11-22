@@ -1,11 +1,31 @@
-﻿namespace EPVV_CBR.RU.Models
+﻿using EPVV_CBR.RU.Data.Enums;
+
+namespace EPVV_CBR.RU.Models
 {
+    /// <summary>
+    /// Репрезентация квитанции, полученной в ответ на сообщение
+    /// </summary>
     public class Receipt
     {
-        public string ReceiveTime { get; set; }
-        public string StatusTime { get; set; }
-        public string Status { get; set; }
-        public string Message { get; set; }
-        public List<ResponseMessageFile> Files { get; set; }
+        /// <summary>
+        /// Время получения квитанции
+        /// </summary>
+        public string ReceiveTime { get; set; } = default!;
+        /// <summary>
+        /// Время из самой квитанции
+        /// </summary>
+        public string StatusTime { get; set; } = default!;
+        /// <summary>
+        /// Состояние обработки сообщения
+        /// </summary>
+        public MessageStatus Status { get; set; }
+        /// <summary>
+        /// Дополнительная информация из квитанции
+        /// </summary>
+        public string Message { get; set; } = default!;
+        /// <summary>
+        /// Файлы, включенные в квитанцию
+        /// </summary>
+        public List<ReceivedFile> Files { get; set; } = default!;
     }
 }
