@@ -2,7 +2,7 @@
 
 namespace EPVV_CBR.RU.Extensions
 {
-    public static class JsonExtensions
+    internal static class JsonExtensions
     {
         public static string SerializeToJson(this object body)
         {
