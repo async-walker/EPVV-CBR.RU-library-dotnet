@@ -1,4 +1,4 @@
-﻿namespace EPVV_CBR.RU.Data.Enums
+﻿namespace EPVV_CBR.RU.Enums
 {
     /// <summary>
     /// Тип сообщения

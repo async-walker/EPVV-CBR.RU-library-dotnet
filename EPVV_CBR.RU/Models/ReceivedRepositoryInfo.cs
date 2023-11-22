@@ -1,4 +1,4 @@
-﻿using EPVV_CBR.RU.Data.Enums;
+﻿using EPVV_CBR.RU.Enums;
 using System.Text.Json.Serialization;
 
 namespace EPVV_CBR.RU.Models

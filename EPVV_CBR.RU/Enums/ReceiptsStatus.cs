@@ -1,8 +1,7 @@
-﻿namespace EPVV_CBR.RU.Data.Enums
+﻿namespace EPVV_CBR.RU.Enums
 {
-    public enum MessageStatus
+    public enum ReceiptsStatus
     {
-        Draft,
         Sent,
         Delivered,
         Error,
@@ -12,6 +11,6 @@
         New,
         Read,
         Replied,
-        Succes
+        Success
     }
 }

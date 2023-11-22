@@ -1,4 +1,4 @@
-﻿using EPVV_CBR.RU.Data.Enums;
+﻿using EPVV_CBR.RU.Enums;
 
 namespace EPVV_CBR.RU.Models
 {

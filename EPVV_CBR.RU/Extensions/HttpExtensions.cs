@@ -1,4 +1,4 @@
-﻿using EPVV_CBR.RU.Data.Enums;
+﻿using EPVV_CBR.RU.Enums;
 using EPVV_CBR.RU.Models;
 using System.Net.Http.Headers;
 
