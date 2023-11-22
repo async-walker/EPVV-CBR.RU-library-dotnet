@@ -49,7 +49,7 @@ namespace EPVV_CBR.RU.Extensions
             }
         }
 
-        public static readonly Dictionary<ContentType?, string> ContentTypeDescription = new()
+        private static readonly Dictionary<ContentType?, string> ContentTypeDescription = new()
         {
             { ContentType.ApplicationJson, "application/json" },
             { ContentType.ApplicationOctetStream, "application/octet-stream" },

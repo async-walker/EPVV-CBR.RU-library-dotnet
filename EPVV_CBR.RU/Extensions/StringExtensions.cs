@@ -4,14 +4,16 @@ namespace EPVV_CBR.RU.Extensions
 {
     public static class StringExtensions
     {
-        private static string? GetDirectoryTasksFiles()
-        {
-            var name = EnvironmentVariablesHelper.DirectoryTasksFiles;
 
-            var envVariableName = EnvironmentVariablesHelper.GetEnvironmentVariable(name);
 
-            return envVariableName ?? throw new EnvironmentVariableNotFoundException();
-        }
+        //private static string? GetDirectoryTasksFiles()
+        //{
+        //    var name = EnvironmentVariablesHelper.DirectoryTasksFiles;
+
+        //    var envVariableName = EnvironmentVariablesHelper.GetEnvironmentVariable(name);
+
+        //    return envVariableName ?? throw new EnvironmentVariableNotFoundException();
+        //}
 
         /// <summary>
         /// Название папки по текущей дате в формате ГГГГ-ММ-ДД
@@ -28,25 +30,25 @@ namespace EPVV_CBR.RU.Extensions
         /// </summary>
         /// <param name="taskType"></param>
         /// <returns>Директория для архива</returns>
-        public static string GetArchiveFolderForTask(TaskType taskType)
-        {
-            var folder = @$"{GetFolderByType(taskType)}\ARCHIVE\{GetFolderNameAtCurrentDate()}";
+        //public static string GetArchiveFolderForTask(TaskType taskType)
+        //{
+        //    var folder = @$"{GetFolderByType(taskType)}\ARCHIVE\{GetFolderNameAtCurrentDate()}";
 
-            return folder;
-        }
+        //    return folder;
+        //}
         /// <summary>
         /// Директория по типу задачи
         /// </summary>
         /// <param name="taskType"></param>
         /// <returns>Путь к директории</returns>
-        public static string GetFolderByType(TaskType taskType)
-        {
-            var directoryTasksFiles = GetDirectoryTasksFiles();
+        //public static string GetFolderByType(TaskType taskType)
+        //{
+        //    var directoryTasksFiles = GetDirectoryTasksFiles();
 
-            var folder = @$"{directoryTasksFiles}\{taskType}";
+        //    var folder = @$"{directoryTasksFiles}\{taskType}";
 
-            return folder;
-        }
+        //    return folder;
+        //}
         /// <summary>
         /// Путь к новому файлу с добавлением расширения
         /// </summary>
