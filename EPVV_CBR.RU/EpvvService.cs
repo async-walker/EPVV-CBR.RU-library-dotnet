@@ -31,7 +31,7 @@ namespace EPVV_CBR.RU
         public void Dispose() => _httpClient.Dispose();
 
         /// <inheritdoc/>
-        public async Task<ResponseViewModel<ResponseMessageBody>> CreateDraftMessage(RequestMessageBody messageBody)
+        public async Task<ResponseMessageBody> CreateDraftMessage(RequestMessageBody messageBody)
         {
             var data = JsonConvert.SerializeObject(messageBody);
             var content = new StringContent(data);
@@ -51,18 +51,13 @@ namespace EPVV_CBR.RU
             var message = await response.ReadContent();
             var responseMessageBody = message.DeserializeFromJson<ResponseMessageBody>();
 
-            var responseViewModel = new ResponseViewModel<ResponseMessageBody>(
-                responseModel: responseMessageBody,
-                statusCode: response.StatusCode,
-                message: "Черновик сообщения успешно создан");
-
-            return responseViewModel;
+            return responseMessageBody;
         }
         
         /// <inheritdoc/>
-        public async Task<ResponseViewModel<List<SessionInfo>>> CreateUploadSessions(ResponseMessageBody messageResponse)
+        public async Task<List<SessionInfo>> CreateUploadSessions(ResponseMessageBody messageResponse)
         {
-            var uploadsData = new List<SessionInfo>();
+            var sessionsInfo = new List<SessionInfo>();
 
             foreach (var file in messageResponse.Files)
             {
@@ -88,19 +83,14 @@ namespace EPVV_CBR.RU
 
                 sessionInfo!.MessageFile = file;
 
-                uploadsData.Add(sessionInfo);
+                sessionsInfo.Add(sessionInfo);
             }
 
-            var responseViewModel = new ResponseViewModel<List<SessionInfo>>(
-                responseModel: uploadsData,
-                statusCode: HttpStatusCode.Created,
-                message: "Сессии для отправки файлов сообщения успешно созданы");
-
-            return responseViewModel;
+            return sessionsInfo;
         }
 
         /// <inheritdoc/>
-        public async Task<ResponseViewModel<List<UploadedFile>>> UploadFiles(List<SessionInfo> sessions, string folderPath)
+        public async Task<List<UploadedFile>> UploadFiles(List<SessionInfo> sessions, string folderPath)
         {
             var uploadedFiles = new List<UploadedFile>();
 
@@ -136,16 +126,11 @@ namespace EPVV_CBR.RU
                 }
             }
 
-            var responseViewModel = new ResponseViewModel<List<UploadedFile>>(
-                responseModel: uploadedFiles,
-                statusCode: HttpStatusCode.Created,
-                message: "Файлы сообщения успешно загружены в репозиторий");
-
-            return responseViewModel;
+            return uploadedFiles;
         }
 
         /// <inheritdoc/>
-        public async Task<ResponseViewModel> ConfirmSendMessage(string messageId)
+        public async Task ConfirmSendMessage(string messageId)
         {
             var endpoint = $"messages/{messageId}";
 
@@ -157,16 +142,10 @@ namespace EPVV_CBR.RU
             if (!response.IsSuccessStatusCode)
                 await response.NotSuccesStatusCodeCatcher(
                     "При подтверждении отправки сообщения произошла ошибка!");
-
-            var responseViewModel = new ResponseViewModel(
-                statusCode: response.StatusCode,
-                message: "Подтверждение отправки сообщения завершено успешно");
-
-            return responseViewModel;
         }
 
         /// <inheritdoc/>
-        public async Task<ResponseViewModel<List<MessageInfo>>> GetMessagesInfoByParameters(string[] parametersQuery)
+        public async Task<List<MessageInfo>> GetMessagesInfoByParameters(string[] parametersQuery)
         {
             var endpoint = $"messages?" + string.Join("&", parametersQuery);
             
@@ -181,15 +160,12 @@ namespace EPVV_CBR.RU
 
             var message = await response.ReadContent();
             var messagesInfo = message.DeserializeFromJson<List<MessageInfo>>();
-            var responseViewModel = new ResponseViewModel<List<MessageInfo>>(
-                responseModel: messagesInfo,
-                statusCode: response.StatusCode);
-
-            return responseViewModel;
+            
+            return messagesInfo;
         }
 
         /// <inheritdoc/>
-        public async Task<ResponseViewModel<List<string>>> DownloadFilesFromRepository(MessageInfo messageInfo, string directory)
+        public async Task<List<string>> DownloadFilesFromRepository(MessageInfo messageInfo, string directory)
         {
             var filesPath = new List<string>();
 
@@ -213,15 +189,11 @@ namespace EPVV_CBR.RU
                 filesPath.Add(path);
             }
 
-            var responseViewModel = new ResponseViewModel<List<string>>(
-                responseModel: filesPath,
-                statusCode: HttpStatusCode.OK);
-
-            return responseViewModel;
+            return filesPath;
         }
 
         /// <inheritdoc/>
-        public async Task<ResponseViewModel<MessageInfo>> GetMessageInfoById(string messageId)
+        public async Task<MessageInfo> GetMessageInfoById(string messageId)
         {
             var endpoint = $"messages/{messageId}";
 
@@ -235,11 +207,8 @@ namespace EPVV_CBR.RU
 
             var message = await response.ReadContent();
             var messageInfo = message.DeserializeFromJson<MessageInfo>();
-            var responseViewModel = new ResponseViewModel<MessageInfo>(
-                responseModel: messageInfo,
-                statusCode: response.StatusCode);
-
-            return responseViewModel;
+            
+            return messageInfo;
         }
     }
 }
