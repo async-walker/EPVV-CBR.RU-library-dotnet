@@ -1,4 +1,5 @@
 ﻿using EPVV_CBR.RU.Models;
+using System.Collections.Specialized;
 
 namespace EPVV_CBR.RU
 {
@@ -45,12 +46,12 @@ namespace EPVV_CBR.RU
         /// <returns></returns>
         Task<List<string>> DownloadFilesFromRepository(MessageInfo messageInfo, string directory);
         /// <summary>
-        /// <para>Получение информации о сообщениях по параметрам</para>
+        /// <para>Получение информации о всех сообщениях с учетом необязательного фильтра (не более 100 сообщений за один запрос)</para>
         /// <para>GET: /messages?[params]</para>
         /// </summary>
-        /// <param name="parametersQuery">Критерии поиска сообщений</param>
+        /// <param name="queryParams">Критерии поиска сообщений</param>
         /// <returns></returns>
-        Task<List<MessageInfo>> GetMessagesInfoByParameters(string[] parametersQuery);
+        Task<List<MessageInfo>> GetMessagesInfoByParameters(NameValueCollection? queryParams = null);
         /// <summary>
         /// <para>Получение информации о сообщении по его ID</para>
         /// <para>GET: /messages/{messageId}</para>

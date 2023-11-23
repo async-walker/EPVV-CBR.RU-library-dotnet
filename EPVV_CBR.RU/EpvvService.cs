@@ -2,8 +2,9 @@
 using EPVV_CBR.RU.Extensions;
 using EPVV_CBR.RU.Models;
 using Newtonsoft.Json;
-using System.Net;
+using System.Collections.Specialized;
 using System.Net.Http.Headers;
+using System.Web;
 
 namespace EPVV_CBR.RU
 {
@@ -81,7 +82,8 @@ namespace EPVV_CBR.RU
                 var message = await response.ReadContent();
                 var sessionInfo = message.DeserializeFromJson<SessionInfo>();
 
-                sessionInfo!.MessageFile = file;
+                sessionInfo.FileSize = file.Size;
+                sessionInfo.FileName = file.Name;
 
                 sessionsInfo.Add(sessionInfo);
             }
@@ -98,12 +100,12 @@ namespace EPVV_CBR.RU
             {
                 var endpoint = session.UploadUrl.RemoveBaseAddressForEndpoint(_httpClient.BaseAddress!);
 
-                var path = @$"{folderPath}\{session.MessageFile.Name}";
+                var path = @$"{folderPath}\{session.FileName}";
                 var byteContent = await File.ReadAllBytesAsync(path);
 
                 using (var content = new ByteArrayContent(byteContent))
                 {
-                    var contentLength = session.MessageFile.Size;
+                    var contentLength = session.FileSize;
                     var contentRange = new ContentRangeHeaderValue(0, contentLength - 1, contentLength);
 
                     var response = await _httpClient.GetResponse(
@@ -122,7 +124,7 @@ namespace EPVV_CBR.RU
                     var message = await response.ReadContent();
                     var uploadedFile = message.DeserializeFromJson<UploadedFile>();
 
-                    uploadedFiles.Add(uploadedFile!);
+                    uploadedFiles.Add(uploadedFile);
                 }
             }
 
@@ -145,10 +147,24 @@ namespace EPVV_CBR.RU
         }
 
         /// <inheritdoc/>
-        public async Task<List<MessageInfo>> GetMessagesInfoByParameters(string[] parametersQuery)
+        public async Task<List<MessageInfo>> GetMessagesInfoByParameters(NameValueCollection? queryParams = null)
         {
-            var endpoint = $"messages?" + string.Join("&", parametersQuery);
-            
+            var endpoint = $"messages";
+
+            if (queryParams is not null)
+            {
+                var queryParamsArray = (
+                    from key in queryParams.AllKeys
+                    from value in queryParams.GetValues(key)
+                    select string.Format(
+                        "{0}={1}",
+                        HttpUtility.UrlEncode(key),
+                        HttpUtility.UrlEncode(value))
+                    ).ToArray();
+
+                endpoint += "?" + string.Join("&", queryParamsArray);
+            }
+
             var response = await _httpClient.GetResponse(
                 credentials: _options.Credentials,
                 endpoint: endpoint,
