@@ -13,7 +13,7 @@ namespace EPVV_CBR.RU
         /// <para>POST: /messages</para>
         /// </summary>
         /// <param name="messageBody">Передаваемое тело сообщения</param>
-        /// <returns></returns>
+        /// <returns>Ответ из тела сообщения</returns>
         Task<ResponseMessageBody> CreateDraftMessage(RequestMessageBody messageBody);
         /// <summary>
         /// <para>Создание сессий отправки</para>
@@ -51,7 +51,7 @@ namespace EPVV_CBR.RU
         /// </summary>
         /// <param name="queryParams">Критерии поиска сообщений</param>
         /// <returns></returns>
-        Task<List<MessageInfo>> GetMessagesInfoByParameters(NameValueCollection? queryParams = null);
+        Task<List<MessageInfo>> GetMessagesInfoByParameters(QueryParameters? queryParams = null);
         /// <summary>
         /// <para>Получение информации о сообщении по его ID</para>
         /// <para>GET: /messages/{messageId}</para>

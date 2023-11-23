@@ -1,4 +1,7 @@
 ﻿using EPVV_CBR.RU.Enums;
+using System.Collections.Specialized;
+using System.Net;
+using System.Web;
 
 namespace EPVV_CBR.RU.Models
 {
@@ -96,5 +99,44 @@ namespace EPVV_CBR.RU.Models
         /// Номер страницы списка сообщений в разбивке по 100 сообщений
         /// </summary>
         public int? Page { get; }
+
+        internal static string ExecuteParams(QueryParameters queryParams)
+        {
+            var query = string.Empty;
+            var queryCollection = new NameValueCollection();
+
+            if (queryParams.Task is not null)
+                queryCollection.Add(nameof(Task), queryParams.Task);
+            if (queryParams.MinDateTime is not null)
+                queryCollection.Add(nameof(MinDateTime), queryParams.MinDateTime);
+            if (queryParams.MaxDateTime is not null)
+                queryCollection.Add(nameof(MaxDateTime), queryParams.MaxDateTime);
+            if (queryParams.MinSize is not null)
+                queryCollection.Add(nameof(MinSize), queryParams.MinSize.ToString());
+            if (queryParams.MaxSize is not null)
+                queryCollection.Add(nameof(MaxSize), queryParams.MaxSize.ToString());
+            if (queryParams.Type is not null)
+                queryCollection.Add(nameof(Type), queryParams.Type.ToString());
+            if (queryParams.Status is not null)
+                queryCollection.Add(nameof(Status), queryParams.Status.ToString());
+            if (queryParams.Page is not null)
+                queryCollection.Add(nameof(Page), queryParams.Page.ToString());
+
+            if (queryCollection.Count > 0)
+            {
+                var queryParamsArray = (
+                    from key in queryCollection.AllKeys
+                    from value in queryCollection.GetValues(key)
+                    select string.Format(
+                        "{0}={1}",
+                        HttpUtility.UrlEncode(key),
+                        HttpUtility.UrlEncode(value))
+                ).ToArray();
+
+                query += "?" + string.Join("&", queryParamsArray);
+            }
+
+            return query;
+        }
     }
 }

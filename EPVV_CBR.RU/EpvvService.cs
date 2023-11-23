@@ -147,24 +147,13 @@ namespace EPVV_CBR.RU
         }
 
         /// <inheritdoc/>
-        public async Task<List<MessageInfo>> GetMessagesInfoByParameters(NameValueCollection? queryParams = null)
+        public async Task<List<MessageInfo>> GetMessagesInfoByParameters(QueryParameters? queryParams = null)
         {
             var endpoint = $"messages";
 
             if (queryParams is not null)
-            {
-                var queryParamsArray = (
-                    from key in queryParams.AllKeys
-                    from value in queryParams.GetValues(key)
-                    select string.Format(
-                        "{0}={1}",
-                        HttpUtility.UrlEncode(key),
-                        HttpUtility.UrlEncode(value))
-                    ).ToArray();
-
-                endpoint += "?" + string.Join("&", queryParamsArray);
-            }
-
+                endpoint += QueryParameters.ExecuteParams(queryParams);
+                
             var response = await _httpClient.GetResponse(
                 credentials: _options.Credentials,
                 endpoint: endpoint,
