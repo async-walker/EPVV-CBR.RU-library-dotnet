@@ -1,7 +1,7 @@
 ﻿namespace EPVV_CBR.RU.Models
 {
     /// <summary>
-    /// Репрезентация тела сообщения для последующей его сериализации в JSON и передачи через REST-сервис
+    /// Репрезентация тела сообщения для его сериализации в JSON и передачи через REST-сервис
     /// </summary>
     public class RequestMessageBody
     {
@@ -16,9 +16,9 @@
         /// <param name="groupId">Идентификатор группы сообщений в формате UUID [16] (необязательно, указывается для передачи информации о том, что сообщение является частью группы сообщений для потоков, поддерживаемых данную функциональность)</param>
         /// <param name="receivers">Получатели сообщения (необязательно, указывается для потоков адресной рассылки)</param>
         public RequestMessageBody(
-            string task, 
-            string title, 
-            string text, 
+            string task,
+            string title,
+            string text,
             List<DirectedFile> files,
             string? correlationId = null,
             string? groupId = null,
