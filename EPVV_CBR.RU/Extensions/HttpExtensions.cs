@@ -1,4 +1,5 @@
 ﻿using EPVV_CBR.RU.Enums;
+using EPVV_CBR.RU.Exceptions;
 using EPVV_CBR.RU.Models;
 using System.Net.Http.Headers;
 
@@ -6,6 +7,17 @@ namespace EPVV_CBR.RU.Extensions
 {
     internal static class HttpExtensions
     {
+        public static async Task WriteStreamContentToFile(this HttpContent responseContent, string path)
+        {
+            using (var content = responseContent)
+            {
+                var data = await content.ReadAsByteArrayAsync();
+                using (var fs = new FileStream(path, FileMode.Create))
+                    await fs.WriteAsync(data, 0, data.Length);
+            }
+            responseContent.Dispose();
+        }
+
         public static async Task<string> ReadContent(this HttpResponseMessage responseMessage)
         {
             var message = await responseMessage.Content.ReadAsStringAsync();
@@ -56,13 +68,9 @@ namespace EPVV_CBR.RU.Extensions
 
             var error = messageContent.DeserializeFromJson<ErrorResponse>()
                     ?? throw new HttpRequestException(
-                        $"Возникла внутренняя ошибка - {responseMessage.StatusCode} ({(int)responseMessage.StatusCode})");
+                        $"Возникла внутренняя ошибка при HTTP-запросе: {responseMessage.StatusCode} ({(int)responseMessage.StatusCode})");
 
-            throw new HttpRequestException(
-                $"{message}\n\n" +
-                $"Код: {error.ErrorCode} ({error.HTTPStatus})\n" +
-                $"Описание: {error.ErrorMessage}\n" +
-                $"Дополнительно: {error.MoreInfo}");
+            throw new EpvvException(message, error);
         }
 
         private static readonly Dictionary<ContentType?, string> ContentTypeDescription = new()
