@@ -46,9 +46,11 @@ namespace EPVV_CBR.RU
         /// <summary>
         /// Скачивание файлов в виде списка массивов байтов
         /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        Task<List<byte[]>> DownloadFilesFromRepository(MessageInfo message);
+        /// <param name="messageId"></param>
+        /// <param name="file"></param>
+        /// <param name="directory"></param>
+        /// <returns>Путь к скачанному файлу</returns>
+        Task<string> DownloadFileFromRepository(string messageId, MessageFileUploaded file, string directory);
         /// <summary>
         /// <para>Получение HTTP-контента скачиваемого файла</para>
         /// </summary>

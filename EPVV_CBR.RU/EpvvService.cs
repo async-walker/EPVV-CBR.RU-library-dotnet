@@ -190,20 +190,15 @@ namespace EPVV_CBR.RU
         }
 
         /// <inheritdoc/>
-        public async Task<List<byte[]>> DownloadFilesFromRepository(MessageInfo message)
+        public async Task<string> DownloadFileFromRepository(string messageId, MessageFileUploaded file, string directory)
         {
-            var listByteArray = new List<byte[]>();
+            var content = await GetFileDataFromRepository(messageId, file.Id);
 
-            foreach (var file in message.Files)
-            {
-                var content = await GetFileDataFromRepository(message.Id, file.Id);
+            var path = @$"{directory}\{file.Name}";
 
-                var byteArray = await content.ReadAsByteArrayAsync();
+            await content.WriteStreamContentToFile(path);
 
-                listByteArray.Add(byteArray);
-            }
-
-            return listByteArray;
+            return path;
         }
 
         /// <inheritdoc/>
