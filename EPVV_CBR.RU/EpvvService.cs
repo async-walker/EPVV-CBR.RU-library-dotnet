@@ -3,6 +3,7 @@ using EPVV_CBR.RU.Extensions;
 using EPVV_CBR.RU.Models;
 using Newtonsoft.Json;
 using System.Collections.Specialized;
+using System.IO;
 using System.Net.Http.Headers;
 using System.Web;
 
@@ -170,32 +171,57 @@ namespace EPVV_CBR.RU
         }
 
         /// <inheritdoc/>
-        public async Task<List<string>> DownloadFilesFromRepository(MessageInfo messageInfo, string directory)
+        public async Task<List<string>> DownloadFilesFromRepository(MessageInfo message, string directory)
         {
             var filesPath = new List<string>();
 
-            foreach (var file in messageInfo.Files)
+            foreach (var file in message.Files)
             {
-                var endpoint = $"messages/{messageInfo.Id}/files/{file.Id}/download";
-
-                var response = await _httpClient.GetResponse(
-                    credentials: _options.Credentials,
-                    endpoint: endpoint,
-                    method: HttpMethod.Get);
-
-                if (!response.IsSuccessStatusCode)
-                    await response.NotSuccesStatusCodeCatcher(
-                        "При скачивании файлов из репозитория произошла ошибка!");
+                var content = await GetFileDataFromRepository(message.Id, file.Id);
 
                 var path = @$"{directory}\{file.Name}";
 
-                await response.Content.WriteStreamContentToFile(path);
+                await content.WriteStreamContentToFile(path);
 
                 filesPath.Add(path);
             }
 
             return filesPath;
         }
+
+        /// <inheritdoc/>
+        public async Task<List<byte[]>> DownloadFilesFromRepository(MessageInfo message)
+        {
+            var listByteArray = new List<byte[]>();
+
+            foreach (var file in message.Files)
+            {
+                var content = await GetFileDataFromRepository(message.Id, file.Id);
+
+                var byteArray = await content.ReadAsByteArrayAsync();
+
+                listByteArray.Add(byteArray);
+            }
+
+            return listByteArray;
+        }
+
+        /// <inheritdoc/>
+        public async Task<HttpContent> GetFileDataFromRepository(string messageId, string fileId)
+        {
+            var endpoint = $"messages/{messageId}/files/{fileId}/download";
+
+            var response = await _httpClient.GetResponse(
+                credentials: _options.Credentials,
+                endpoint: endpoint,
+                method: HttpMethod.Get);
+
+            if (!response.IsSuccessStatusCode)
+                await response.NotSuccesStatusCodeCatcher(
+                    "При скачивании файла из репозитория произошла ошибка!");
+
+            return response.Content;
+        } 
 
         /// <inheritdoc/>
         public async Task<MessageInfo> GetMessageInfoById(string messageId)

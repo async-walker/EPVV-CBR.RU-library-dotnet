@@ -1,5 +1,4 @@
 ﻿using EPVV_CBR.RU.Models;
-using System.Collections.Specialized;
 
 namespace EPVV_CBR.RU
 {
@@ -38,13 +37,25 @@ namespace EPVV_CBR.RU
         /// <returns></returns>
         Task ConfirmSendMessage(string messageId);
         /// <summary>
-        /// <para>Скачивание файлов из репозитория сообщения</para>
-        /// <para>GET: /messages/{messageId}/files/{fileId}/download</para>
+        /// <para>Скачивание файлов из репозитория сообщения в пользовательскую директорию</para>
         /// </summary>
-        /// <param name="messageInfo">Информация о сообщении</param>
+        /// <param name="message">Информация о сообщении</param>
         /// <param name="directory">Директория, куда следует сохранить скачиваемые файлы</param>
         /// <returns></returns>
-        Task<List<string>> DownloadFilesFromRepository(MessageInfo messageInfo, string directory);
+        Task<List<string>> DownloadFilesFromRepository(MessageInfo message, string directory);
+        /// <summary>
+        /// Скачивание файлов в виде списка массивов байтов
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        Task<List<byte[]>> DownloadFilesFromRepository(MessageInfo message);
+        /// <summary>
+        /// <para>Получение HTTP-контента скачиваемого файла</para>
+        /// </summary>
+        /// <param name="messageId">ID сообщения</param>
+        /// <param name="fileId">ID файла</param>
+        /// <returns><see cref="HttpContent"/></returns>
+        Task<HttpContent> GetFileDataFromRepository(string messageId, string fileId);
         /// <summary>
         /// <para>Получение информации о всех сообщениях с учетом необязательного фильтра (не более 100 сообщений за один запрос)</para>
         /// <para>GET: /messages?[params]</para>
