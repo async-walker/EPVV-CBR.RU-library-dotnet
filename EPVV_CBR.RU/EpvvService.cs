@@ -177,11 +177,7 @@ namespace EPVV_CBR.RU
 
             foreach (var file in message.Files)
             {
-                var content = await GetFileDataFromRepository(message.Id, file.Id);
-
-                var path = @$"{directory}\{file.Name}";
-
-                await content.WriteStreamContentToFile(path);
+                var path = await DownloadFileFromRepository(message.Id, file, directory);
 
                 filesPath.Add(path);
             }
