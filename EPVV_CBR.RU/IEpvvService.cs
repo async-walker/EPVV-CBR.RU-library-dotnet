@@ -5,7 +5,7 @@ namespace EPVV_CBR.RU
     /// <summary>
     /// Интерфейс для взаимодействия с ЕПВВ
     /// </summary>
-    public interface IEpvvService : IDisposable
+    public interface IEpvvService
     {
         /// <summary>
         /// <para>Создание черновика сообщения</para>
@@ -41,10 +41,10 @@ namespace EPVV_CBR.RU
         /// </summary>
         /// <param name="message">Информация о сообщении</param>
         /// <param name="directory">Директория, куда следует сохранить скачиваемые файлы</param>
-        /// <returns></returns>
+        /// <returns>Список путей к скачанным файлам</returns>
         Task<List<string>> DownloadFilesFromRepository(MessageInfo message, string directory);
         /// <summary>
-        /// Скачивание файлов в виде списка массивов байтов
+        /// Скачивание файла из репозитория в пользовательскую директорию
         /// </summary>
         /// <param name="messageId"></param>
         /// <param name="file"></param>
