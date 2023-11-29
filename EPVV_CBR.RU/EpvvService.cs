@@ -23,11 +23,9 @@ namespace EPVV_CBR.RU
         public EpvvService(EpvvServiceOptions options, HttpClient? httpClient = default)
         {
             _options = options ?? throw new ArgumentNullException(nameof(options));
-            _httpClient = httpClient ?? new HttpClient() { BaseAddress = new Uri(_options.BaseAddress) };
+            _httpClient = httpClient ?? new HttpClient();
+            _httpClient.BaseAddress = new Uri(_options.BaseAddress);
         }
-
-        /// <inheritdoc/>
-        public void Dispose() => _httpClient.Dispose();
 
         /// <inheritdoc/>
         public async Task<ResponseMessageBody> CreateDraftMessage(RequestMessageBody messageBody)

@@ -1,5 +1,6 @@
 ﻿using EPVV_CBR.RU.Enums;
 using EPVV_CBR.RU.Extensions;
+using System.Net;
 
 namespace EPVV_CBR.RU
 {
@@ -8,14 +9,8 @@ namespace EPVV_CBR.RU
     /// </summary>
     public class EpvvServiceOptions
     {
-        /// <summary>
-        /// Адрес тестового портала
-        /// </summary>
-        public const string TestPortalUrl = "https://portal5test.cbr.ru/back/rapi2";
-        /// <summary>
-        /// Адрес портала
-        /// </summary>
-        public const string PortalUrl = "https://portal5.cbr.ru/back/rapi2";
+        const string TestPortalUrl = "https://portal5test.cbr.ru/back/rapi2";
+        const string PortalUrl = "https://portal5.cbr.ru/back/rapi2";
 
         private static bool _isTestPortal;
 
@@ -48,20 +43,14 @@ namespace EPVV_CBR.RU
         /// <param name="username">Имя учетной записи портала portal5.cbr.ru (portal5test.cbr.ru)</param>
         /// <param name="password">Пароль от учетной записи</param>
         /// <param name="repositoryType">Тип загрузки файлов в репозиторий</param>
-        public EpvvServiceOptions(string username, string password, bool testPortal = false, RepositoryType repositoryType = RepositoryType.http)
-            : this(GetEncodeCredentials(username, password), testPortal, repositoryType)
-        { }
-
-        /// <summary>
-        /// Инициализация настроек для сервиса
-        /// </summary>
-        /// <param name="testPortal">Указать, использовать ли тестовый портал</param>
-        /// <param name="credentials">Зашифрованные аутентификационные данные для формата Base</param>
-        /// <param name="repositoryType">Тип загрузки файлов в репозиторий</param>
-        public EpvvServiceOptions(string credentials, bool testPortal = false, RepositoryType repositoryType = RepositoryType.http)
+        public EpvvServiceOptions(
+            string username, 
+            string password, 
+            bool testPortal = false, 
+            RepositoryType repositoryType = RepositoryType.http)
         {
             _isTestPortal = testPortal;
-            Credentials = credentials;
+            Credentials = GetEncodeCredentials(username, password);
             RepositoryType = repositoryType;
         }
 
