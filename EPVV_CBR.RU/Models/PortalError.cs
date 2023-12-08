@@ -3,7 +3,7 @@
     /// <summary>
     /// Репрезентация JSON-объекта ошибки REST-методов
     /// </summary>
-    public class ErrorResponse
+    public record PortalError
     {
         /// <summary>
         /// HTTP статус класса 4xx согласно Hypertext Transfer Protocol (HTTP) Status Code Registry 
@@ -18,7 +18,7 @@
         /// </summary>
         public string ErrorMessage { get; set; } = default!;
         /// <summary>
-        /// Объект с дополнительно информацией к ошибке, по-умолчанию пустой
+        /// Объект с дополнительной информацией к ошибке, по-умолчанию пустой
         /// </summary>
         public object? MoreInfo { get; set; } = null;
     }
