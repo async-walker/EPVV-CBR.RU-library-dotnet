@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace EPVV_CBR.RU.Models
+namespace EPVV_CBR_RU.Models
 {
     /// <summary>
     /// Репрезентация информации о сессии для загрузки файла

@@ -1,4 +1,4 @@
-﻿namespace EPVV_CBR.RU.Models
+﻿namespace EPVV_CBR_RU.Models
 {
     public class MessageFileUploaded
     {

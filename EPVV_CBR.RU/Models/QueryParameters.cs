@@ -1,9 +1,9 @@
-﻿using EPVV_CBR.RU.Enums;
+﻿using EPVV_CBR_RU.Enums;
 using System.Collections.Specialized;
 using System.Net;
 using System.Web;
 
-namespace EPVV_CBR.RU.Models
+namespace EPVV_CBR_RU.Models
 {
     /// <summary>
     /// Онлайн-запрос критериев поиска сообщений

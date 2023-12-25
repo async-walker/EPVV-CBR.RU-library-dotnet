@@ -1,6 +1,6 @@
-﻿using EPVV_CBR.RU.Enums;
+﻿using EPVV_CBR_RU.Enums;
 
-namespace EPVV_CBR.RU.Models
+namespace EPVV_CBR_RU.Models
 {
     /// <summary>
     /// Репрезентация квитанции, полученной в ответ на сообщение

@@ -1,4 +1,4 @@
-﻿namespace EPVV_CBR.RU.Models
+﻿namespace EPVV_CBR_RU.Models
 {
     /// <summary>
     /// Репрезентация тела сообщения для его сериализации в JSON и передачи через REST-сервис

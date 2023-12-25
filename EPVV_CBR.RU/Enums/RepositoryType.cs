@@ -1,4 +1,4 @@
-﻿namespace EPVV_CBR.RU.Enums
+﻿namespace EPVV_CBR_RU.Enums
 {
     /// <summary>
     /// Тип репозитория

@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace EPVV_CBR.RU.Models
+﻿namespace EPVV_CBR_RU.Models
 {
     /// <summary>
     /// Репрезентация информации о характеристиках репозитория, в который будет загружен файл
