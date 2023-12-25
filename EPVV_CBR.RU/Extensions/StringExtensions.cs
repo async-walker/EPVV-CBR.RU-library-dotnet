@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace EPVV_CBR.RU.Extensions
+namespace EPVV_CBR_RU.Extensions
 {
     internal static class StringExtensions
     {
