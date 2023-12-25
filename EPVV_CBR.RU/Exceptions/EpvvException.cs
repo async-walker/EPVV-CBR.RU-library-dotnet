@@ -1,23 +1,21 @@
-﻿using EPVV_CBR.RU.Models;
-
-namespace EPVV_CBR.RU.Exceptions
+﻿namespace EPVV_CBR_RU.Exceptions
 {
     /// <summary>
     /// Репрезентация ошибки взаимодействия с ЕПВВ
     /// </summary>
-    public class EpvvException : Exception
+    public class EPVVException : Exception
     {
         /// <summary>
         /// Инициализация ошибки взаимодействия с ЕПВВ
         /// </summary>
         /// <param name="message"></param>
-        /// <param name="errorResponse"></param>
-        public EpvvException(string message, ErrorResponse errorResponse) 
-            : base(message) => ErrorResponse = errorResponse;
+        /// <param name="error"></param>
+        public EPVVException(string message, PortalError error) 
+            : base(message) => Error = error;
 
         /// <summary>
         /// Ошибка REST-метода
         /// </summary>
-        public ErrorResponse ErrorResponse { get; } = default!;
+        public PortalError Error { get; } = default!;
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace EPVV_CBR.RU.Models
+﻿namespace EPVV_CBR_RU.Exceptions
 {
     /// <summary>
     /// Репрезентация JSON-объекта ошибки REST-методов
