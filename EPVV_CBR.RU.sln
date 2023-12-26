@@ -5,7 +5,7 @@ VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPVV Client", "EPVV_CBR.RU\EPVV Client.csproj", "{7B40518B-1EED-42C9-B2D0-619C656E8FFF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPVV_CBR.RU.Tests", "EPVV_CBR.RU.Tests\EPVV_CBR.RU.Tests.csproj", "{B3A17F5F-3B92-478F-8688-EACE5427E6E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPVV_CBR.RU.Tests", "EPVV_CBR.RU.Tests\EPVV Client.Tests.csproj", "{B3A17F5F-3B92-478F-8688-EACE5427E6E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
