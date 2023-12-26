@@ -1,6 +1,5 @@
 ﻿using EPVV_CBR_RU.Enums;
 using System.Collections.Specialized;
-using System.Net;
 using System.Web;
 
 namespace EPVV_CBR_RU.Models
@@ -8,7 +7,7 @@ namespace EPVV_CBR_RU.Models
     /// <summary>
     /// Онлайн-запрос критериев поиска сообщений
     /// </summary>
-    public class QueryParameters
+    public class QueryFilters
     {
         private const string maskDateTime = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
@@ -30,7 +29,7 @@ namespace EPVV_CBR_RU.Models
         /// <para>Допустимые значения: n > 0 (положительные целые числа, больше 0). </para>
         /// <para>Если запрос страницы не указан, возвращается первая страница сообщений. Если n за границами диапазона страниц, то вернется пустой массив сообщений. </para>
         /// <para>В случае некорректного номера страницы – ошибка</para></param>
-        public QueryParameters(
+        public QueryFilters(
             string? task = null,
             DateTime? minDateTime = null,
             DateTime? maxDateTime = null,
@@ -100,33 +99,36 @@ namespace EPVV_CBR_RU.Models
         /// </summary>
         public int? Page { get; }
 
-        internal static string ExecuteParams(QueryParameters queryParams)
+        internal static string ExecuteParams(QueryFilters? queryFilters)
         {
-            var query = string.Empty;
-            var queryCollection = new NameValueCollection();
+            if (queryFilters is null)
+                return string.Empty;
 
-            if (queryParams.Task is not null)
-                queryCollection.Add(nameof(Task), queryParams.Task);
-            if (queryParams.MinDateTime is not null)
-                queryCollection.Add(nameof(MinDateTime), queryParams.MinDateTime);
-            if (queryParams.MaxDateTime is not null)
-                queryCollection.Add(nameof(MaxDateTime), queryParams.MaxDateTime);
-            if (queryParams.MinSize is not null)
-                queryCollection.Add(nameof(MinSize), queryParams.MinSize.ToString());
-            if (queryParams.MaxSize is not null)
-                queryCollection.Add(nameof(MaxSize), queryParams.MaxSize.ToString());
-            if (queryParams.Type is not null)
-                queryCollection.Add(nameof(Type), queryParams.Type.ToString());
-            if (queryParams.Status is not null)
-                queryCollection.Add(nameof(Status), queryParams.Status.ToString());
-            if (queryParams.Page is not null)
-                queryCollection.Add(nameof(Page), queryParams.Page.ToString());
+            string query = string.Empty;
+            NameValueCollection queryCollection = [];
+
+            if (queryFilters.Task is not null)
+                queryCollection.Add(nameof(Task), queryFilters.Task);
+            if (queryFilters.MinDateTime is not null)
+                queryCollection.Add(nameof(MinDateTime), queryFilters.MinDateTime);
+            if (queryFilters.MaxDateTime is not null)
+                queryCollection.Add(nameof(MaxDateTime), queryFilters.MaxDateTime);
+            if (queryFilters.MinSize is not null)
+                queryCollection.Add(nameof(MinSize), queryFilters.MinSize.ToString());
+            if (queryFilters.MaxSize is not null)
+                queryCollection.Add(nameof(MaxSize), queryFilters.MaxSize.ToString());
+            if (queryFilters.Type is not null)
+                queryCollection.Add(nameof(Type), queryFilters.Type.ToString());
+            if (queryFilters.Status is not null)
+                queryCollection.Add(nameof(Status), queryFilters.Status.ToString());
+            if (queryFilters.Page is not null)
+                queryCollection.Add(nameof(Page), queryFilters.Page.ToString());
 
             if (queryCollection.Count > 0)
             {
                 var queryParamsArray = (
                     from key in queryCollection.AllKeys
-                    from value in queryCollection.GetValues(key)
+                    from value in queryCollection.GetValues(key)!
                     select string.Format(
                         "{0}={1}",
                         HttpUtility.UrlEncode(key),
