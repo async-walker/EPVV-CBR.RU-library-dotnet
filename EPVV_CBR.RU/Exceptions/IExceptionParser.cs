@@ -1,14 +1,14 @@
 ﻿namespace EPVV_CBR_RU.Exceptions;
 
 /// <summary>
-/// Парсинг неудачных ответов от API ЕПВВ
+/// Парсинг исключений неудачных ответов от API
 /// </summary>
 public interface IExceptionParser
 {
     /// <summary>
-    /// Парасинг HTTP ответа на наличие исключений
+    /// Парсинг HTTP ответа с исключением
     /// </summary>
-    /// <param name="apiResponse">Ошибка API с ответом</param>
+    /// <param name="error">Ошибка API с ответом</param>
     /// <returns></returns>
-    EPVVException Parse(PortalError apiResponse);
+    ApiRequestException Parse(ApiResponseError error);
 }
