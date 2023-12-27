@@ -1,13 +1,13 @@
-﻿using EPVV_CBR.RU.Enums;
-using EPVV_CBR.RU.Extensions;
+﻿using EPVV_CBR_RU.Enums;
+using EPVV_CBR_RU.Extensions;
 using System.Net;
 
-namespace EPVV_CBR.RU
+namespace EPVV_CBR_RU
 {
     /// <summary>
     /// Набор настроек для сервиса взаимодействия с ЕПВВ ЦБ
     /// </summary>
-    public class EpvvServiceOptions
+    public class EpvvClientOptions
     {
         const string TestPortalUrl = "https://portal5test.cbr.ru/back/rapi2";
         const string PortalUrl = "https://portal5.cbr.ru/back/rapi2";
@@ -37,13 +37,13 @@ namespace EPVV_CBR.RU
         public RepositoryType RepositoryType { get; }
 
         /// <summary>
-        /// Инициализация настроек для сервиса
+        /// Инициализация опций для клиента
         /// </summary>
         /// <param name="testPortal">Указать, использовать ли тестовый портал</param>
         /// <param name="username">Имя учетной записи портала portal5.cbr.ru (portal5test.cbr.ru)</param>
         /// <param name="password">Пароль от учетной записи</param>
         /// <param name="repositoryType">Тип загрузки файлов в репозиторий</param>
-        public EpvvServiceOptions(
+        public EpvvClientOptions(
             string username, 
             string password, 
             bool testPortal = false, 
