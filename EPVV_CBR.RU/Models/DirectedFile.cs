@@ -1,4 +1,5 @@
 ﻿using EPVV_CBR_RU.Enums;
+using Newtonsoft.Json;
 
 namespace EPVV_CBR_RU.Models
 {
@@ -23,10 +24,10 @@ namespace EPVV_CBR_RU.Models
             FileType fileType, 
             bool encrypted, 
             long size, 
-            string? description = null,
-            string? signedFile = null,
-            RepositoryType? repositoryType = null,
-            RepositoryInfo? repositoryInfo = null)
+            string? description = default,
+            string? signedFile = default,
+            RepositoryType? repositoryType = default,
+            RepositoryInfo? repositoryInfo = default)
         {
             Name = name;
             FileType = fileType;
@@ -41,34 +42,42 @@ namespace EPVV_CBR_RU.Models
         /// <summary>
         /// Имя файла
         /// </summary>
+        [JsonProperty(Required = Required.Always)]
         public string Name { get; set; }
         /// <summary>
         /// Описание файла (необязательное поле, для запросов и предписаний из Банка России содержит имя файла с расширением, однако может содержать запрещённые символы Windows)
         /// </summary>
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string? Description { get; set; }
         /// <summary>
         /// Тип файла
         /// </summary>
+        [JsonProperty(Required = Required.Always)]
         public FileType FileType { get; set; }
         /// <summary>
         /// Признак зашифрованности файла
         /// </summary>
+        [JsonProperty(Required = Required.Always)]
         public bool Encrypted { get; set; }
         /// <summary>
         /// Имя и расширение другого приложенного файла сообщения,  подписью для которого является данный файл (заполняется только для файлов подписи *.sig)
         /// </summary>
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string? SignedFile { get; set; }
         /// <summary>
         /// Размер отправляемого файла в байтах (int64)
         /// </summary>
+        [JsonProperty(Required = Required.Always)]
         public long Size { get; set; }
         /// <summary>
         /// Необязательный параметр, указывающий тип репозитория, в который пользователь будет загружать файл. В случае если не установлен, то зависит от характеристик задачи
         /// </summary>
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public RepositoryType? RepositoryType { get; set; }
         /// <summary>
         /// Информация о характеристиках репозитория, в который будет загружен файл. Заполняется в случае, если указан <b>RepositoryType = aspera</b>
         /// </summary>
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public RepositoryInfo? RepositoryInfo { get; set; }
     }
 }

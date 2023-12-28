@@ -3,9 +3,9 @@
 namespace EPVV_CBR_RU.Models
 {
     /// <summary>
-    /// Репрезентация десереализованного ответа тела сообщения
+    /// Репрезентация созданного черновика сообщения, полученного от API
     /// </summary>
-    public class ResponseMessageBody
+    public class DraftMessage
     {
         /// <summary>
         /// Уникальный идентификатор сообщения в формате UUID [16]
