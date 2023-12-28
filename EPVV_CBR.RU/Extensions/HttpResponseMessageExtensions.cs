@@ -15,8 +15,7 @@ namespace EPVV_CBR_RU.Extensions
             {
                 throw new RequestException(
                     message: "Response doesn't contain any content",
-                    httpStatusCode: httpResponse.StatusCode
-                );
+                    httpStatusCode: httpResponse.StatusCode);
             }
 
             try
@@ -53,14 +52,14 @@ namespace EPVV_CBR_RU.Extensions
             }
             finally
             {
-            #if NET6_0_OR_GREATER
+#if NET6_0_OR_GREATER
                 if (contentStream is not null)
                 {
                     await contentStream.DisposeAsync().ConfigureAwait(false);
                 }
-            #else
-                contentStream?.Dispose();
-            #endif
+#else
+            contentStream?.Dispose();
+#endif
             }
         }
 

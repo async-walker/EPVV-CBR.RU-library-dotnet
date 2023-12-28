@@ -1,10 +1,17 @@
-﻿using System.Text;
+﻿using EPVV_CBR_RU.Requests.Abstractions;
+using System.Net.Http;
+using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace EPVV_CBR_RU.Extensions
 {
     internal static class StringExtensions
     {
-        public static string EncodeToBase64(this string data)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string EncodeUtf8(this string value) =>
+        new(Encoding.UTF8.GetBytes(value).Select(Convert.ToChar).ToArray());
+
+        internal static string EncodeToBase64(this string data)
         {
             var bytes = Encoding.UTF8.GetBytes(data);
             var encode = Convert.ToBase64String(bytes);
@@ -12,9 +19,12 @@ namespace EPVV_CBR_RU.Extensions
             return encode;
         }
 
-        public static string RemoveBaseAddressForEndpoint(this string uri, Uri baseAddress)
+        internal static string TryRemoveBaseAddressForEndpoint(this string uri, string baseAddress)
         {
-            var endpoint = uri.Replace(baseAddress.ToString(), string.Empty).Remove(0, 1);
+            var endpoint = uri;
+
+            if (uri.Contains(baseAddress))
+                endpoint = uri.Replace(baseAddress, string.Empty).Remove(0, 1);// FIX!!!!
 
             return endpoint;
         }
