@@ -35,7 +35,9 @@ namespace EPVV_CBR_RU
         {
             ArgumentNullException.ThrowIfNull(request);
 
-            var url = $"{_options.BaseAddress}/{request.Endpoint}";
+            var endpoint = request.Endpoint.TryRemoveBaseAddressForEndpoint(_httpClient.BaseAddress!.AbsoluteUri);
+
+            var url = $"{_options.BaseAddress}/{endpoint}";
 
             using var requestMessage = new HttpRequestMessage(
                 method: request.Method,
@@ -56,7 +58,11 @@ namespace EPVV_CBR_RU
 
             if (!responseMessage.IsSuccessStatusCode)
             {
-                //throw ExceptionsParser.Parse(new ApiResponseError());
+                var failedApiResponse = await responseMessage
+                .DeserializeContentAsync<ApiResponseError>()
+                .ConfigureAwait(false);
+
+                throw ExceptionsParser.Parse(failedApiResponse);
             }
 
             var apiResponse = await responseMessage
