@@ -1,20 +1,67 @@
-﻿namespace EPVV_CBR_RU.Models
+﻿using EPVV_CBR_RU.Enums;
+
+namespace EPVV_CBR_RU.Models
 {
+    /// <summary>
+    /// Репрезентация информации о сообщении
+    /// </summary>
     public class MessageInfo
     {
-        public string Id { get; set; }
-        public string CorrelationId { get; set; }
-        public string GroupId { get; set; }
-        public string Type { get; set; }
-        public string Title { get; set; }
-        public string Text { get; set; }
-        public string CreationDate { get; set; }
-        public string UpdatedDate { get; set; }
-        public string Status { get; set; }
-        public string TaskName { get; set; }
-        public string RegNumber { get; set; }
+        /// <summary>
+        /// Уникальный идентификатор сообщения в формате UUID
+        /// </summary>
+        public string Id { get; set; } = default!;
+        /// <summary>
+        /// Идентификатор корреляции сообщения в формате UUID
+        /// </summary>
+        public string? CorrelationId { get; set; }
+        /// <summary>
+        /// Идентификатор группы сообщений в формате UUID
+        /// </summary>
+        public string? GroupId { get; set; }
+        /// <summary>
+        /// Тип сообщения
+        /// </summary>
+        public MessageType Type { get; set; }
+        /// <summary>
+        /// Название сообщения
+        /// </summary>
+        public string Title { get; set; } = default!;
+        /// <summary>
+        /// Текст сообщения
+        /// </summary>
+        public string? Text { get; set; }
+        /// <summary>
+        /// Дата создания сообщения
+        /// </summary>
+        public string CreationDate { get; set; } = default!;
+        /// <summary>
+        /// Дата последнего изменения статуса сообщения
+        /// </summary>
+        public string? UpdatedDate { get; set; }
+        /// <summary>
+        /// Статус сообщения
+        /// </summary>
+        public MessageStatus Status { get; set; }
+        /// <summary>
+        /// Наименование задачи
+        /// </summary>
+        public string TaskName { get; set; } = default!;
+        /// <summary>
+        /// Регистрационный номер
+        /// </summary>
+        public string? RegNumber { get; set; }
+        /// <summary>
+        /// Общий размер сообщения в байтах
+        /// </summary>
         public int TotalSize { get; set; }
-        public Sender Sender { get; set; }
-        public List<MessageFileUploaded> Files { get; set; }
+        /// <summary>
+        /// Отправитель сообщения (только для сообщений, отправляемых другими Пользователями)
+        /// </summary>
+        public Sender? Sender { get; set; }
+        /// <summary>
+        /// Файлы, включенные в сообщение
+        /// </summary>
+        public List<UploadedFile> Files { get; set; } = default!;
     }
 }

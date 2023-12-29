@@ -1,18 +1,24 @@
-﻿namespace EPVV_CBR_RU.Models
+﻿using EPVV_CBR_RU.Enums;
+
+namespace EPVV_CBR_RU.Models
 {
     /// <summary>
-    /// Репрезентация десериализации загруженного на сервер файла
+    /// Информация о загружаемом на сервер файла
     /// </summary>
     public class UploadedFile
     {
         /// <summary>
-        /// Уникальный идентификатор файла в формате UUID [16]
+        /// Уникальный идентификатор сообщения в формате
         /// </summary>
         public string Id { get; set; } = default!;
         /// <summary>
         /// Имя файла
         /// </summary>
         public string Name { get; set; } = default!;
+        /// <summary>
+        /// Тип файла
+        /// </summary>
+        public FileType FileType { get; set; }
         /// <summary>
         /// Описание файла (необязательно поле, для запросов и предписаний из Банка России содержит имя файла с расширением, однако может содержать запрещённые символы Windows)
         /// </summary>
@@ -32,6 +38,6 @@
         /// <summary>
         /// Информация о репозиториях (описание репозитория в котором расположен файл. Данная информация используется как для загрузки файла, так и при его выгрузке)
         /// </summary>
-        public List<ReceivedRepositoryInfo> RepositoryInfo { get; set; } = default!;
+        public List<AdvancedRepositoryInfo> RepositoryInfo { get; set; } = default!;
     }
 }

@@ -21,23 +21,21 @@
             Path = path;
         }
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         public RepositoryInfo() { }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         /// <summary>
         /// Контрольная сумма файла, необходимая для контроля его целостности. Берется пользователем из «манифеста», формируемого ТПС «Aspera» после загрузки файла
         /// </summary>
-        public string CheckSum { get; set; }
+        public string CheckSum { get; set; } = default!;
         /// <summary>
         /// Алгоритм расчёта контрольной суммы файла, в зависимости от установок ТПС «Aspera». Берется пользователем из «манифеста», формируемого ТПС «Aspera» после загрузки файла
         /// </summary>
-        public string CheckSumType { get; set; }
+        public string CheckSumType { get; set; } = default!;
         /// <summary>
         /// Путь к файлу относительно хранилища пользователя в ТПС «Аспера», включая имя файла. Имена файлов должны быть в виде GUID без расширения. Имя генерирует сам пользователь. Берется пользователем из «манифеста», формируемого ТПС «Aspera» после загрузки файла
         /// </summary>
-        public string Path { get; set; }
+        public string Path { get; set; } = default!;
     }
 }

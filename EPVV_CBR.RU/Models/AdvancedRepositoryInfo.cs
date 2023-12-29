@@ -5,7 +5,7 @@ namespace EPVV_CBR_RU.Models
     /// <summary>
     /// Репрезентация полученной информации о репозитории
     /// </summary>
-    public class ReceivedRepositoryInfo : RepositoryInfo
+    public class AdvancedRepositoryInfo : RepositoryInfo
     {
         /// <summary>
         /// IP адрес или имя узла репозитория

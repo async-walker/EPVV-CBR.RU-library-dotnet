@@ -26,6 +26,6 @@ namespace EPVV_CBR_RU.Models
         /// <summary>
         /// Файлы, включенные в квитанцию
         /// </summary>
-        public List<ReceivedFile> Files { get; set; } = default!;
+        public List<UploadedFile> Files { get; set; } = default!;
     }
 }

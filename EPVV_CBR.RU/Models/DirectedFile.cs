@@ -47,7 +47,6 @@ namespace EPVV_CBR_RU.Models
         /// <summary>
         /// Описание файла (необязательное поле, для запросов и предписаний из Банка России содержит имя файла с расширением, однако может содержать запрещённые символы Windows)
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string? Description { get; set; }
         /// <summary>
         /// Тип файла
@@ -62,7 +61,6 @@ namespace EPVV_CBR_RU.Models
         /// <summary>
         /// Имя и расширение другого приложенного файла сообщения,  подписью для которого является данный файл (заполняется только для файлов подписи *.sig)
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string? SignedFile { get; set; }
         /// <summary>
         /// Размер отправляемого файла в байтах (int64)
@@ -72,12 +70,10 @@ namespace EPVV_CBR_RU.Models
         /// <summary>
         /// Необязательный параметр, указывающий тип репозитория, в который пользователь будет загружать файл. В случае если не установлен, то зависит от характеристик задачи
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public RepositoryType? RepositoryType { get; set; }
         /// <summary>
         /// Информация о характеристиках репозитория, в который будет загружен файл. Заполняется в случае, если указан <b>RepositoryType = aspera</b>
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public RepositoryInfo? RepositoryInfo { get; set; }
     }
 }

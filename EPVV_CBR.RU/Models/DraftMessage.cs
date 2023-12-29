@@ -62,7 +62,7 @@ namespace EPVV_CBR_RU.Models
         /// <summary>
         /// Файлы, включенные в сообщение
         /// </summary>
-        public List<ReceivedFile> Files { get; set; } = default!;
+        public List<UploadedFile> Files { get; set; } = default!;
         /// <summary>
         /// Квитанции, полученные в ответ на сообщение
         /// </summary>
