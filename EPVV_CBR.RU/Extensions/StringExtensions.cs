@@ -1,6 +1,4 @@
-﻿using EPVV_CBR_RU.Requests.Abstractions;
-using System.Net.Http;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace EPVV_CBR_RU.Extensions
@@ -24,7 +22,7 @@ namespace EPVV_CBR_RU.Extensions
             var endpoint = uri;
 
             if (uri.Contains(baseAddress))
-                endpoint = uri.Replace(baseAddress, string.Empty).Remove(0, 1);// FIX!!!!
+                endpoint = uri.Replace(baseAddress, string.Empty).Remove(0, 1);
 
             return endpoint;
         }

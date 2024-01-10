@@ -18,5 +18,16 @@ namespace EPVV_CBR_RU.Extensions
 
             return searchResult;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte[] ConvertToByteArray(this Stream stream)
+        {
+            byte[] bytes;
+
+            using (var binaryReader = new BinaryReader(stream))
+                bytes = binaryReader.ReadBytes((int)stream.Length);
+
+            return bytes;
+        }
     }
 }

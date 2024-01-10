@@ -14,7 +14,7 @@ namespace EPVV_CBR_RU.Extensions
             if (httpResponse.Content is null)
             {
                 throw new RequestException(
-                    message: "Response doesn't contain any content",
+                    message: "Ответ не содержит какой-либо контент",
                     httpStatusCode: httpResponse.StatusCode);
             }
 
@@ -24,6 +24,8 @@ namespace EPVV_CBR_RU.Extensions
 
                 try
                 {
+                    var stringContent = await httpResponse.Content.ReadAsStringAsync();
+                    
                     contentStream = await httpResponse.Content
                         .ReadAsStreamAsync()
                         .ConfigureAwait(continueOnCapturedContext: false);
@@ -35,17 +37,15 @@ namespace EPVV_CBR_RU.Extensions
                 {
                     throw CreateRequestException(
                         httpResponse: httpResponse,
-                        message: "Required properties not found in response",
-                        exception: exception
-                    );
+                        message: "Запрашиваемые свойства не найдены в теле ответа",
+                        exception: exception);
                 }
 
                 if (deserializedObject is null)
                 {
                     throw CreateRequestException(
                         httpResponse: httpResponse,
-                        message: "Required properties not found in response"
-                    );
+                        message: "Запрашиваемые свойства не найдены в теле ответа");
                 }
 
                 return deserializedObject;
