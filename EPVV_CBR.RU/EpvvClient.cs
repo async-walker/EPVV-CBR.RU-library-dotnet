@@ -59,8 +59,8 @@ namespace EPVV_CBR_RU
             if (!responseMessage.IsSuccessStatusCode)
             {
                 var failedApiResponse = await responseMessage
-                .DeserializeContentAsync<ApiResponseError>()
-                .ConfigureAwait(false);
+                    .DeserializeContentAsync<ApiResponseError>()
+                    .ConfigureAwait(false);
 
                 throw ExceptionsParser.Parse(failedApiResponse);
             }

@@ -1,6 +1,5 @@
 ﻿using EPVV_CBR_RU.Enums;
 using EPVV_CBR_RU.Extensions;
-using System.Net;
 
 namespace EPVV_CBR_RU
 {
