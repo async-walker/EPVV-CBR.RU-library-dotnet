@@ -1,46 +1,59 @@
-﻿namespace EPVV_CBR_RU.Requests
+﻿using EPVV_CBR_RU.Extensions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
+namespace EPVV_CBR_RU.Requests
 {
+    /// <summary>
+    /// Репрезентация запроса к API с загрузкой файла
+    /// </summary>
+    /// <typeparam name="TResponse">Тип ожидаемого результата ответа</typeparam>
+    [JsonObject(MemberSerialization.OptIn, NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     public abstract class FileRequestBase<TResponse> : RequestBase<TResponse>
     {
+        /// <summary>
+        /// Инициализация экземпляра запроса
+        /// </summary>
+        /// <param name="method">HTTP метод для использования</param>
+        /// <param name="endpoint">Конечная точка API</param>
         protected FileRequestBase(HttpMethod method, string endpoint)
             : base(method, endpoint)
         { }
 
-        public byte[] ByteData { get; set; }
-
         /// <summary>
-        /// Generate multipart form data content
+        /// Генерация контента массива байтов
         /// </summary>
-        /// <param name="fileParameterName"></param>
-        /// <param name="inputFile"></param>
+        /// <param name="stream"></param>
         /// <returns></returns>
-        protected ByteArrayContent ToByteArrayContent(
-            byte[] byteData)
+        /// <exception cref="ArgumentNullException"></exception>
+        protected ByteArrayContent ToByteArrayContent(Stream stream)
         {
-            if (byteData is null or { Length: 0 })
-                throw new ArgumentNullException("Byte data or it's content is null");
+            if (stream is null or { Length: 0 })
+                throw new ArgumentNullException("Поток с контентом пустой");
 
-            return GenerateByteArrayContent(byteData);
+            var bytes = stream.ConvertToByteArray();
+
+            return GenerateByteArrayContent(bytes);
         }
 
         /// <summary>
-        /// Generate multipart form data content
+        /// Генерация контента массива байтов
         /// </summary>
-        /// <param name="exceptPropertyNames"></param>
+        /// <param name="bytes"></param>
         /// <returns></returns>
-        protected ByteArrayContent GenerateByteArrayContent(byte[] byteData)
+        protected ByteArrayContent GenerateByteArrayContent(byte[] bytes)
         {
-            var mediaPartContent = new ByteArrayContent(byteData)
+            var byteArrayContent = new ByteArrayContent(bytes)
             {
                 Headers =
                 {
                     {"Content-Type", "application/octet-stream"},
-                    {"Content-Length", $"{ByteData.Length}" },
-                    {"Content-Range", $"bytes 0-{ByteData.Length-1}/{ByteData.Length}" }
+                    {"Content-Length", $"{bytes.Length}" },
+                    {"Content-Range", $"bytes 0-{bytes.Length-1}/{bytes.Length}" }
                 },
             };
 
-            return mediaPartContent;
+            return byteArrayContent;
         }
     }
 }

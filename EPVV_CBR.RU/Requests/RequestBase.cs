@@ -5,6 +5,10 @@ using System.Text;
 
 namespace EPVV_CBR_RU.Requests
 {
+    /// <summary>
+    /// Репрезентация запроса к API
+    /// </summary>
+    /// <typeparam name="TResponse">Тип ожидаемого результата ответа</typeparam>
     [JsonObject(MemberSerialization.OptIn, NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     public abstract class RequestBase<TResponse> : IRequest<TResponse>
     {
@@ -16,6 +20,11 @@ namespace EPVV_CBR_RU.Requests
         [JsonIgnore]
         public string Endpoint { get; }
 
+        /// <summary>
+        /// Инициализация запроса
+        /// </summary>
+        /// <param name="method">HTTP метод</param>
+        /// <param name="endpoint">Конечная точка</param>
         protected RequestBase(
             HttpMethod method, 
             string endpoint)
