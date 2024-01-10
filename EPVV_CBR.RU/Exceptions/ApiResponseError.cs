@@ -9,36 +9,28 @@ namespace EPVV_CBR_RU.Exceptions
     /// <remarks>
     /// Инициализация экземпляра <see cref="ApiResponseError"/>
     /// </remarks>
-    /// <param name="httpStatus">HTTP статус класса 4xx согласно Hypertext Transfer Protocol (HTTP) Status Code Registry</param>
-    /// <param name="code">Внутренний код ошибки Портала. Служит клиенту для автоматизированной обработки ошибок</param>
-    /// <param name="message">Расшифровка ошибки. Служит для человеко-читаемой обработки ошибок</param>
-    /// <param name="moreInfo">Объект с дополнительной информацией к ошибке, по-умолчанию пустой</param>
     [JsonObject(MemberSerialization.OptIn, NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-    public class ApiResponseError(
-        int httpStatus,
-        string code,
-        string message,
-        object? moreInfo)
+    public class ApiResponseError
     {
         /// <summary>
         /// HTTP статус класса 4xx согласно Hypertext Transfer Protocol (HTTP) Status Code Registry 
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public int HTTPStatus { get; private set; } = httpStatus;
+        [JsonProperty(nameof(HTTPStatus), Required = Required.Always)]
+        public int HTTPStatus { get; private set; }
         /// <summary>
         /// Внутренний код ошибки Портала. Служит клиенту для автоматизированной обработки ошибок
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public string Code { get; private set; } = code;
+        [JsonProperty("ErrorCode", Required = Required.Always)]
+        public string Code { get; private set; } = default!;
         /// <summary>
         /// Расшифровка ошибки. Служит для человеко-читаемой обработки ошибок
         /// </summary>
-        [JsonProperty(Required = Required.Always)]
-        public string Message { get; private set; } = message;
+        [JsonProperty("ErrorMessage", Required = Required.Always)]
+        public string Message { get; private set; } = default!;
         /// <summary>
         /// Объект с дополнительной информацией к ошибке, по-умолчанию пустой
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public object? MoreInfo { get; private set; } = moreInfo;
+        [JsonProperty(nameof(MoreInfo), DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public object? MoreInfo { get; private set; }
     }
 }
