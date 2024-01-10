@@ -30,14 +30,14 @@ namespace EPVV_CBR_RU.Models
         /// <para>Если запрос страницы не указан, возвращается первая страница сообщений. Если n за границами диапазона страниц, то вернется пустой массив сообщений. </para>
         /// <para>В случае некорректного номера страницы – ошибка</para></param>
         public QueryFilters(
-            string? task = null,
-            DateTime? minDateTime = null,
-            DateTime? maxDateTime = null,
-            int? minSize = null,
-            int? maxSize = null,
-            MessageType? type = null,
-            MessageStatus? status = null,
-            int? page = null)
+            string? task = default,
+            DateTime? minDateTime = default,
+            DateTime? maxDateTime = default,
+            int? minSize = default,
+            int? maxSize = default,
+            MessageType? type = default,
+            MessageStatus? status = default,
+            int? page = default)
         {
             Task = task;
             MinSize = minSize;
@@ -99,43 +99,58 @@ namespace EPVV_CBR_RU.Models
         /// </summary>
         public int? Page { get; }
 
-        internal static string ExecuteParams(QueryFilters? queryFilters)
+        internal static string ExecuteFilters(QueryFilters? queryFilters)
         {
             if (queryFilters is null)
                 return string.Empty;
 
             string query = string.Empty;
-            NameValueCollection queryCollection = [];
+            NameValueCollection queryFiltersCollection = [];
 
             if (queryFilters.Task is not null)
-                queryCollection.Add(nameof(Task), queryFilters.Task);
+                queryFiltersCollection.Add(
+                    name: nameof(Task),
+                    value: queryFilters.Task);
             if (queryFilters.MinDateTime is not null)
-                queryCollection.Add(nameof(MinDateTime), queryFilters.MinDateTime);
+                queryFiltersCollection.Add(
+                    name: nameof(MinDateTime),
+                    value: queryFilters.MinDateTime);
             if (queryFilters.MaxDateTime is not null)
-                queryCollection.Add(nameof(MaxDateTime), queryFilters.MaxDateTime);
+                queryFiltersCollection.Add(
+                    name: nameof(MaxDateTime),
+                    value: queryFilters.MaxDateTime);
             if (queryFilters.MinSize is not null)
-                queryCollection.Add(nameof(MinSize), queryFilters.MinSize.ToString());
+                queryFiltersCollection.Add(
+                    name: nameof(MinSize),
+                    value: queryFilters.MinSize.ToString());
             if (queryFilters.MaxSize is not null)
-                queryCollection.Add(nameof(MaxSize), queryFilters.MaxSize.ToString());
+                queryFiltersCollection.Add(
+                    name: nameof(MaxSize),
+                    value: queryFilters.MaxSize.ToString());
             if (queryFilters.Type is not null)
-                queryCollection.Add(nameof(Type), queryFilters.Type.ToString());
+                queryFiltersCollection.Add(
+                    name: nameof(Type),
+                    value: queryFilters.Type.ToString());
             if (queryFilters.Status is not null)
-                queryCollection.Add(nameof(Status), queryFilters.Status.ToString());
+                queryFiltersCollection.Add(
+                    name: nameof(Status),
+                    value: queryFilters.Status.ToString());
             if (queryFilters.Page is not null)
-                queryCollection.Add(nameof(Page), queryFilters.Page.ToString());
+                queryFiltersCollection.Add(
+                    name: nameof(Page),
+                    value: queryFilters.Page.ToString());
 
-            if (queryCollection.Count > 0)
+            if (queryFiltersCollection.Count > 0)
             {
-                var queryParamsArray = (
-                    from key in queryCollection.AllKeys
-                    from value in queryCollection.GetValues(key)!
+                var queryFiltersArray =
+                    from key in queryFiltersCollection.AllKeys
+                    from value in queryFiltersCollection.GetValues(key)!
                     select string.Format(
-                        "{0}={1}",
-                        HttpUtility.UrlEncode(key),
-                        HttpUtility.UrlEncode(value))
-                ).ToArray();
+                        format: "{0}={1}",
+                        arg0: HttpUtility.UrlEncode(key),
+                        arg1: HttpUtility.UrlEncode(value));
 
-                query += "?" + string.Join("&", queryParamsArray);
+                query += "?" + string.Join("&", queryFiltersArray);
             }
 
             return query;
