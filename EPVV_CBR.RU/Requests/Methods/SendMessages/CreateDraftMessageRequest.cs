@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace EPVV_CBR_RU.Requests.Methods
+namespace EPVV_CBR_RU.Requests.Methods.SendMessages
 {
     [JsonObject(MemberSerialization.OptIn, NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     public class CreateDraftMessageRequest : RequestBase<DraftMessage>
@@ -15,12 +15,10 @@ namespace EPVV_CBR_RU.Requests.Methods
         /// <summary>
         /// Идентификатор корреляции сообщения в формате UUID [16] (необязательно, указывается для формирования ответного сообщения для потоков, поддерживаемых данную функциональность)
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string? CorrelationId { get; set; }
         /// <summary>
         /// Идентификатор группы сообщений в формате UUID [16] (необязательно, указывается для передачи информации о том, что сообщение является частью группы сообщений для потоков, поддерживаемых данную функциональность)
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string? GroupId { get; set; }
         /// <summary>
         /// Название сообщения, отображается в интерфейсе
@@ -40,7 +38,6 @@ namespace EPVV_CBR_RU.Requests.Methods
         /// <summary>
         /// Получатели сообщения (необязательно, указывается для потоков адресной рассылки)
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public List<Receiver>? Receivers { get; set; }
 
         public CreateDraftMessageRequest(
@@ -50,7 +47,7 @@ namespace EPVV_CBR_RU.Requests.Methods
             List<DirectedFile> files,
             string? correlationId = default,
             string? groupId = default,
-            List<Receiver>? receivers = default) 
+            List<Receiver>? receivers = default)
             : base(HttpMethod.Post, "messages")
         {
             Task = task;
