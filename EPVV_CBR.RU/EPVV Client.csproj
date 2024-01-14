@@ -14,4 +14,15 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Requests\Methods\DeleteMessages\" />
+    <Folder Include="Requests\Methods\GetReferenceInfo\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="EPVV_CBR.RU">
+      <HintPath>..\..\..\Documents\EPVV library\EPVV_CBR.RU.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

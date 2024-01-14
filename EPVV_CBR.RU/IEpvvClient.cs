@@ -4,7 +4,7 @@ using EPVV_CBR_RU.Requests.Abstractions;
 namespace EPVV_CBR_RU
 {
     /// <summary>
-    /// Интерфейс для взаимодействия с ЕПВВ
+    /// Интерфейс взаимодействия с API
     /// </summary>
     public interface IEpvvClient
     {
@@ -34,13 +34,13 @@ namespace EPVV_CBR_RU
         /// <summary>
         /// Метод для загрузки файлов
         /// </summary>
-        /// <param name="filePath"></param>
+        /// <param name="endpoint"></param>
         /// <param name="destination"></param>
         /// <param name="cancellationToken"></param>
-        /// <exception cref="ArgumentException">Путь файла - <c>null</c>, пустой или очень короткий</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="destination"/> - <c>null</c></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         Task DownloadFileAsync(
-            string filePath,
+            string endpoint,
             Stream destination,
             CancellationToken cancellationToken = default);
     }
