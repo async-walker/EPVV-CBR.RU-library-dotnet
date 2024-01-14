@@ -1,5 +1,6 @@
 ﻿using EPVV_CBR_RU;
 using EPVV_CBR_RU.Enums;
+using EPVV_CBR_RU.Exceptions;
 using EPVV_CBR_RU.Models;
 using Microsoft.Extensions.Configuration;
 
@@ -7,9 +8,12 @@ namespace EPVV_Client.Tests
 {
     public class EpvvClientExtensions_ApiMethodsTests
     {
-        private readonly IEpvvClient _epvvClient;
+        private IEpvvClient _epvvClient = default!;
 
-        public EpvvClientExtensions_ApiMethodsTests()
+        public EpvvClientExtensions_ApiMethodsTests() 
+            => SetEpvvClient();
+
+        private void SetEpvvClient(bool useTestPortal = true)
         {
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
@@ -17,9 +21,7 @@ namespace EPVV_Client.Tests
 
             var clientSection = configuration.GetSection("EPVV_Client");
 
-            var testPortal = true;
-
-            var optionsSection = testPortal switch
+            var optionsSection = useTestPortal switch
             {
                 true => clientSection.GetSection("TestPortalCreds"),
                 false => clientSection.GetSection("PortalCreds"),
@@ -28,20 +30,20 @@ namespace EPVV_Client.Tests
             var username = optionsSection.GetValue<string>("Username")!;
             var password = optionsSection.GetValue<string>("Password")!;
 
-            var options = new EpvvClientOptions(username, password, testPortal);
+            var options = new EpvvClientOptions(username, password, useTestPortal);
 
             _epvvClient = new EpvvClient(options);
         }
 
         [Fact]
-        public async void CreateAndConfirmSendMessage()
+        public async void CreateThenUploadAndConfirmSendMessage()
         {
-            var encFileInfo = new FileInfo(@"N:\ЗАДАЧИ\KYC\2023-10-02.zip.enc");
-            var sigFileInfo = new FileInfo(@"N:\ЗАДАЧИ\KYC\2023-10-02.zip.sig");
+            var encFileInfo = new FileInfo("2024-01-09.zip.enc");
+            var sigFileInfo = new FileInfo("2024-01-09.zip.sig");
 
             var draftMessage = await _epvvClient.CreateDraftMessageAsync(
                 task: "Zadacha_137",
-                title: "TEST_APIMETHOD_137TASK",
+                title: "TITLE_TEST_APIMETHOD",
                 text: "TEXT_TEST_APIMETHOD",
                 files:
                 [
@@ -60,52 +62,74 @@ namespace EPVV_Client.Tests
             {
                 var sessionInfo = await _epvvClient.CreateUploadSessionAsync(draftMessage.Id, file.Id);
 
-                var uploadedFile = await _epvvClient.UploadFileAsync(sessionInfo, @"N:\ЗАДАЧИ\KYC\2023-10-02.zip.enc");
+                var stream = new FileStream(path: file.Name, FileMode.Open);
+
+                var uploadedFile = await _epvvClient.UploadFileAsync(sessionInfo, stream);
+            }
+
+            await _epvvClient.ConfirmSendMessage(draftMessage.Id);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData]
+        [InlineData(false, MessageType.outbox, MessageStatus.registered)]
+        public async void GetMessagesInfoByFilters(
+            bool testPortal = false,
+            MessageType? messageType = default,
+            MessageStatus? messageStatus = default)
+        {
+            SetEpvvClient(testPortal);
+
+            var queryFilters = new QueryFilters(
+                type: messageType,
+                status: messageStatus);
+
+            var messages = await _epvvClient.GetMessagesInfoByFiltersAsync(queryFilters);
+
+            Assert.True(messages.Count != 0);
+        }
+
+        [Theory]
+        [InlineData("e19657da-0c0b-4d89-80ac-b0f20103f891")]
+        [InlineData("a054c858-bff1-412f-bced-b0f3004f3fd2", true)]
+        public async void GetMessageInfoById(
+            string messageId, 
+            bool testPortal = false)
+        {
+            SetEpvvClient(testPortal);
+
+            var messageInfo = await _epvvClient.GetMessageInfoByIdAsync(messageId);
+
+            Assert.NotNull(messageInfo);
+        }
+
+        [Theory]
+        [InlineData("f30cbf11-8650-4883-be48-b5f30057d0bf", "MESSAGE_NOT_FOUND")] // Несуществующее сообщение с данным ID
+        [InlineData("f30cbf11-8650-4883-be48-b5f30057d0bf", "MESSAGE_NOT_FOUND", true)]
+        public async void ExceptionMessageNotFoundGetMessageInfoById(
+            string messageId, 
+            string exceptedErrorCode, 
+            bool testPortal = false)
+        {
+            SetEpvvClient(testPortal);
+
+            try
+            {
+                await _epvvClient.GetMessageInfoByIdAsync(messageId);
+            }
+            catch (ApiRequestException ex)
+            {
+                Assert.Equal(exceptedErrorCode, ex.Code);
             }
         }
 
         [Fact]
-        public async void CreateDraftMessage()
+        public async void DownloadMessage()
         {
-            var encFileInfo = new FileInfo(@"N:\ЗАДАЧИ\KYC\2023-10-02.zip.enc");
-            var sigFileInfo = new FileInfo(@"N:\ЗАДАЧИ\KYC\2023-10-02.zip.sig");
+            var path = await _epvvClient.DownloadMessageAsync("93b896c6-8400-4b7f-9c31-b0f30077757b", @"C:\Service");
 
-            var responseMessage = await _epvvClient.CreateDraftMessageAsync(
-                task: "Zadacha_137",
-                title: "TEST_APIMETHOD_137TASK",
-                text: "TEXT_TEST_APIMETHOD",
-                files:
-                [
-                    new(name: encFileInfo.Name,
-                        fileType: FileType.Document,
-                        encrypted: true,
-                        size: encFileInfo.Length),
-                    new(name: sigFileInfo.Name,
-                        fileType: FileType.Sign,
-                        encrypted: false,
-                        size: sigFileInfo.Length,
-                        signedFile: encFileInfo.Name)
-                ]);
-
-            Assert.True(responseMessage.Status is MessageStatus.draft);
-        }
-
-        [Fact]
-        public async void GetMessagesInfoByFilters()
-        {
-            var queryFilters = new QueryFilters();
-
-            var messages = await _epvvClient.GetMessagesInfoByFiltersAsync(queryFilters);
-
-            Assert.True(messages.Any());
-        }
-
-        [Fact]
-        public async void GetMessageInfoById()
-        {
-            var messageInfo = await _epvvClient.GetMessageInfoByIdAsync("3d3b52bd-1529-434d-a8a7-b0e000af9a03");
-
-            Assert.NotNull(messageInfo);
+            Assert.True(File.Exists(path));
         }
     }
 }
