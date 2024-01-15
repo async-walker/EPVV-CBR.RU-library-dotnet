@@ -1,7 +1,7 @@
-﻿using EPVV_CBR_RU.Enums;
+﻿using EPVV_CBR_RU.Types.Enums;
 using Newtonsoft.Json;
 
-namespace EPVV_CBR_RU.Models
+namespace EPVV_CBR_RU.Types
 {
     /// <summary>
     /// Репрезентация файла, включенного в отправляемое сообщение
@@ -20,10 +20,10 @@ namespace EPVV_CBR_RU.Models
         /// <param name="repositoryType">Необязательный параметр, указывающий тип репозитория, в который пользователь будет загружать файл. В случае если не установлен, то зависит от характеристик задачи</param>
         /// <param name="repositoryInfo">Информация о характеристиках репозитория, в который будет загружен файл. Заполняется в случае, если указан RepositoryType = aspera</param>
         public DirectedFile(
-            string name, 
-            FileType fileType, 
-            bool encrypted, 
-            long size, 
+            string name,
+            FileType fileType,
+            bool encrypted,
+            long size,
             string? description = default,
             string? signedFile = default,
             RepositoryType? repositoryType = default,

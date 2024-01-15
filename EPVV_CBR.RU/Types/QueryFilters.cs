@@ -1,8 +1,8 @@
-﻿using EPVV_CBR_RU.Enums;
+﻿using EPVV_CBR_RU.Types.Enums;
 using System.Collections.Specialized;
 using System.Web;
 
-namespace EPVV_CBR_RU.Models
+namespace EPVV_CBR_RU.Types
 {
     /// <summary>
     /// Онлайн-запрос критериев поиска сообщений
@@ -57,7 +57,7 @@ namespace EPVV_CBR_RU.Models
         /// <summary>
         /// Минимально возможная дата создания сообщения (ГОСТ ISO 8601-2001 по маске «yyyy-MM-dd’T’HH:mm:ss’Z’») 
         /// </summary>
-        public string? MinDateTime 
+        public string? MinDateTime
         {
             get
             {
@@ -69,7 +69,7 @@ namespace EPVV_CBR_RU.Models
         /// <summary>
         /// Максимально возможная дата создания сообщения (ГОСТ ISO 8601-2001 по маске «yyyy-MM-dd’T’HH:mm:ss’Z’») 
         /// </summary>
-        public string? MaxDateTime 
+        public string? MaxDateTime
         {
             get
             {

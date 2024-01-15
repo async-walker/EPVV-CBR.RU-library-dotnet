@@ -1,4 +1,4 @@
-﻿namespace EPVV_CBR_RU.Models
+﻿namespace EPVV_CBR_RU.Types
 {
     /// <summary>
     /// Репрезентация информации о характеристиках репозитория, в который будет загружен файл

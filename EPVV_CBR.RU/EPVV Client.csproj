@@ -19,10 +19,4 @@
     <Folder Include="Requests\Methods\GetReferenceInfo\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="EPVV_CBR.RU">
-      <HintPath>..\..\..\Documents\EPVV library\EPVV_CBR.RU.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

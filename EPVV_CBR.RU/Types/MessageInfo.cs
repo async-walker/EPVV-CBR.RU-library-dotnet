@@ -1,6 +1,6 @@
-﻿using EPVV_CBR_RU.Enums;
+﻿using EPVV_CBR_RU.Types.Enums;
 
-namespace EPVV_CBR_RU.Models
+namespace EPVV_CBR_RU.Types.Responses
 {
     /// <summary>
     /// Репрезентация информации о сообщении
