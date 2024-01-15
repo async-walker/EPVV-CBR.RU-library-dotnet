@@ -1,8 +1,9 @@
 ﻿using EPVV_CBR_RU.Exceptions;
 using EPVV_CBR_RU.Extensions;
-using EPVV_CBR_RU.Models;
 using EPVV_CBR_RU.Requests.Methods.GetMessagesInfo;
 using EPVV_CBR_RU.Requests.Methods.SendMessages;
+using EPVV_CBR_RU.Types;
+using EPVV_CBR_RU.Types.Responses;
 using System.Net;
 
 namespace EPVV_CBR_RU
@@ -40,10 +41,10 @@ namespace EPVV_CBR_RU
                     request: new CreateDraftMessageRequest(
                         task: task,
                         title: title,
-                        text: text, 
-                        files: files, 
-                        correlationId: correlationId, 
-                        groupId: groupId, 
+                        text: text,
+                        files: files,
+                        correlationId: correlationId,
+                        groupId: groupId,
                         receivers: receivers),
                     cancellationToken)
                 .ConfigureAwait(false);
@@ -165,6 +166,54 @@ namespace EPVV_CBR_RU
 
             await client.DownloadFileAsync(
                 endpoint: $"messages/{messageId}/download",
+                destination: new FileStream(path, FileMode.OpenOrCreate),
+                cancellationToken)
+                .ConfigureAwait(false);
+
+            return path;
+        }
+
+        /// <summary>
+        /// Поиск информации о конкретном файле из сообщения
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="messageId"></param>
+        /// <param name="fileId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<UploadedFile> GetMessageFileInfoAsync(
+            this IEpvvClient client,
+            string messageId,
+            string fileId,
+            CancellationToken cancellationToken = default) =>
+            await client.ThrowIfNull()
+               .MakeRequestAsync(
+                   request: new GetMessageFileInfoRequest(messageId, fileId),
+                   cancellationToken)
+               .ConfigureAwait(false);
+
+        /// <summary>
+        /// Скачивание конкретного файла из сообщения
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="messageId"></param>
+        /// <param name="fileId"></param>
+        /// <param name="directoryToSave"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<string> DownloadFileFromMessageAsync(
+            this IEpvvClient client,
+            string messageId,
+            string fileId,
+            string directoryToSave,
+            CancellationToken cancellationToken = default)
+        {
+            var message = await client.GetMessageFileInfoAsync(messageId, fileId, cancellationToken);
+
+            var path = Path.Combine(directoryToSave, message.Name);
+
+            await client.DownloadFileAsync(
+                endpoint: $"messages/{messageId}/files/{fileId}/download",
                 destination: new FileStream(path, FileMode.OpenOrCreate),
                 cancellationToken)
                 .ConfigureAwait(false);
