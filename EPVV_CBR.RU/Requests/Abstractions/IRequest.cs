@@ -3,7 +3,7 @@
     /// <summary>
     /// Репрезентация запроса к API
     /// </summary>
-    public interface IRequest
+    public interface IRequest<TResponse>
     {
         /// <summary>
         /// HTTP метод, по которому передается запрос
