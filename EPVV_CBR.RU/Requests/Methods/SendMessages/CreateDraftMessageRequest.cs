@@ -1,4 +1,5 @@
-﻿using EPVV_CBR_RU.Models;
+﻿using EPVV_CBR_RU.Types;
+using EPVV_CBR_RU.Types.Responses;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 

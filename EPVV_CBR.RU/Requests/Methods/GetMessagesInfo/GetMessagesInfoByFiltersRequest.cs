@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
-using EPVV_CBR_RU.Models;
+using EPVV_CBR_RU.Types;
+using EPVV_CBR_RU.Types.Responses;
 
 namespace EPVV_CBR_RU.Requests.Methods.GetMessagesInfo
 {

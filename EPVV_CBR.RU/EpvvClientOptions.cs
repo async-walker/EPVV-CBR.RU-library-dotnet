@@ -1,5 +1,5 @@
-﻿using EPVV_CBR_RU.Enums;
-using EPVV_CBR_RU.Extensions;
+﻿using EPVV_CBR_RU.Extensions;
+using EPVV_CBR_RU.Types.Enums;
 
 namespace EPVV_CBR_RU
 {
