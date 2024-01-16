@@ -110,7 +110,7 @@ namespace EPVV_CBR_RU
                 name: "Authorization",
                 value: $"Basic {_options.Credentials}");
 
-            using HttpResponseMessage httpResponse =
+            HttpResponseMessage httpResponse =
                 await _httpClient.GetResponseAsync(requestMessage, cancellationToken)
                 .ConfigureAwait(false);
 
