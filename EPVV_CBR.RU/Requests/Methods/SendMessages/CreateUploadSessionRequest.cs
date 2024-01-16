@@ -10,7 +10,7 @@ namespace EPVV_CBR_RU.Requests.Methods.SendMessages
         public CreateUploadSessionRequest(string messageId, string fileId)
             : base(
                   method: HttpMethod.Post,
-                  endpoint: $"messages/{messageId}/files/{fileId}/createUploadSession")
+                  path: $"messages/{messageId}/files/{fileId}/createUploadSession")
         { }
     }
 }

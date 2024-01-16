@@ -15,9 +15,9 @@ namespace EPVV_CBR_RU.Requests
         /// Инициализация экземпляра запроса
         /// </summary>
         /// <param name="method">HTTP метод для использования</param>
-        /// <param name="endpoint">Конечная точка API</param>
-        protected FileRequestBase(HttpMethod method, string endpoint)
-            : base(method, endpoint)
+        /// <param name="path">Путь API</param>
+        protected FileRequestBase(HttpMethod method, string path)
+            : base(method, path)
         { }
 
         /// <summary>

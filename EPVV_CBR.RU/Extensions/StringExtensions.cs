@@ -17,14 +17,14 @@ namespace EPVV_CBR_RU.Extensions
             return encode;
         }
 
-        internal static string TryRemoveBaseAddressForEndpoint(this string uri, string baseAddress)
+        internal static string TryRemoveBaseAddressForPath(this string uri, string baseAddress)
         {
-            var endpoint = uri;
+            var path = uri;
 
             if (uri.Contains(baseAddress))
-                endpoint = uri.Replace(baseAddress, string.Empty).Remove(0, 1);
+                path = uri.Replace(baseAddress, string.Empty).Remove(0, 1);
 
-            return endpoint;
+            return path;
         }
     }
 }

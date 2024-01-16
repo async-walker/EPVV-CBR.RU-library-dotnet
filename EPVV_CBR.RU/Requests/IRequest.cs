@@ -12,7 +12,7 @@
         /// <summary>
         /// Конечная точка, на которую передается запрос
         /// </summary>
-        string Endpoint { get; }
+        string Path { get; }
         /// <summary>
         /// Метод для генерации <see cref="HttpContent"/>
         /// </summary>

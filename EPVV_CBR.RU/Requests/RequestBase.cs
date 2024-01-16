@@ -1,5 +1,4 @@
-﻿using EPVV_CBR_RU.Requests.Abstractions;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Text;
 
@@ -18,19 +17,17 @@ namespace EPVV_CBR_RU.Requests
 
         /// <inheritdoc/>
         [JsonIgnore]
-        public string Endpoint { get; }
+        public string Path { get; }
 
         /// <summary>
         /// Инициализация запроса
         /// </summary>
         /// <param name="method">HTTP метод</param>
-        /// <param name="endpoint">Конечная точка</param>
-        protected RequestBase(
-            HttpMethod method, 
-            string endpoint)
+        /// <param name="path">Путь к методу API</param>
+        protected RequestBase(HttpMethod method, string path)
         {
             Method = method;
-            Endpoint = endpoint;
+            Path = path;
         }
 
         /// <summary>
