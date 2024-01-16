@@ -8,6 +8,10 @@ namespace EPVV_CBR_RU.Types
     public class Receipt
     {
         /// <summary>
+        /// Уникальный идентификатор файла
+        /// </summary>
+        public string Id { get; set; } = default!;
+        /// <summary>
         /// Время получения квитанции
         /// </summary>
         public string ReceiveTime { get; set; } = default!;
