@@ -1,7 +1,6 @@
 ﻿using EPVV_CBR_RU.Exceptions;
 using EPVV_CBR_RU.Extensions;
-using EPVV_CBR_RU.Requests.Abstractions;
-using System.Runtime.CompilerServices;
+using EPVV_CBR_RU.Requests;
 
 namespace EPVV_CBR_RU
 {
@@ -36,74 +35,26 @@ namespace EPVV_CBR_RU
         {
             ArgumentNullException.ThrowIfNull(request);
 
-            var endpoint = request.Endpoint.TryRemoveBaseAddressForEndpoint(_httpClient.BaseAddress!.AbsoluteUri);
+            var path = request.Path.TryRemoveBaseAddressForPath(_httpClient.BaseAddress!.AbsoluteUri);
 
-            var url = $"{_options.BaseAddress}/{endpoint}";
+            var url = $"{_options.BaseAddress}/{path}";
 
-            using var requestMessage = new HttpRequestMessage(
-                method: request.Method,
-                requestUri: url)
-            {
-                Content = request.ToHttpContent()
-            };
+            using var requestMessage = 
+                new HttpRequestMessage(
+                    method: request.Method,
+                    requestUri: url)
+                {
+                    Content = request.ToHttpContent()
+                };
 
-            requestMessage.Headers.TryAddWithoutValidation(
-                name: "Authorization",
-                value: $"Basic {_options.Credentials}");
-
-            using var responseMessage = await SendRequestAsync(
-                _httpClient, 
-                requestMessage, 
-                cancellationToken)
-                .ConfigureAwait(false);
-
-            if (!responseMessage.IsSuccessStatusCode)
-            {
-                var failedApiResponse = await responseMessage
-                    .DeserializeContentAsync<ApiResponseError>()
-                    .ConfigureAwait(false);
-
-                throw ExceptionsParser.Parse(failedApiResponse);
-            }
+            using var responseMessage =
+                await GetAndHandleResponse(requestMessage, cancellationToken);
 
             var apiResponse = await responseMessage
                 .DeserializeContentAsync<TResponse>()
                 .ConfigureAwait(false);
 
             return apiResponse;
-
-            static async Task<HttpResponseMessage> SendRequestAsync(
-                HttpClient httpClient,
-                HttpRequestMessage requestMessage,
-                CancellationToken cancellationToken)
-            {
-                HttpResponseMessage? httpResponse;
-                
-                try
-                {
-                    httpResponse = await httpClient
-                        .SendAsync(requestMessage, cancellationToken)
-                        .ConfigureAwait(false);
-                }
-                catch (TaskCanceledException exception)
-                {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        throw;
-                    }
-
-                    throw new Exception(message: "Request timed out", innerException: exception);
-                }
-                catch (Exception exception)
-                {
-                    throw new Exception(
-                        message: "Exception during making request",
-                        innerException: exception
-                    );
-                }
-
-                return httpResponse;
-            }
         }
 
         /// <inheritdoc/>
@@ -114,26 +65,53 @@ namespace EPVV_CBR_RU
 
         /// <inheritdoc/>
         public async Task DownloadFileAsync(
-            string endpoint, 
+            string path, 
             Stream destination, 
             CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(destination);
 
-            var fileUri = $"{_options.BaseAddress}/{endpoint}";
+            var fileUri = $"{_options.BaseAddress}/{path}";
 
-            using var requestMessage = new HttpRequestMessage(
-                method: HttpMethod.Get,
-                requestUri: fileUri);
+            using var requestMessage = 
+                new HttpRequestMessage(
+                    method: HttpMethod.Get,
+                    requestUri: fileUri);
 
+            using var responseMessage = 
+                await GetAndHandleResponse(requestMessage, cancellationToken);
+
+            if (responseMessage.Content is null)
+            {
+                throw new RequestException(
+                    message: "Ответ не содержит какой-либо контент",
+                    responseMessage.StatusCode);
+            }
+
+            try
+            {
+                await responseMessage.Content.CopyToAsync(destination)
+                    .ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                throw new RequestException(
+                    message: "Exception during file download",
+                    responseMessage.StatusCode,
+                    exception);
+            }
+        }
+
+        private async Task<HttpResponseMessage> GetAndHandleResponse(
+            HttpRequestMessage requestMessage, 
+            CancellationToken cancellationToken)
+        {
             requestMessage.Headers.TryAddWithoutValidation(
                 name: "Authorization",
                 value: $"Basic {_options.Credentials}");
 
-            using HttpResponseMessage httpResponse = await GetResponseAsync(
-                _httpClient,
-                requestMessage,
-                cancellationToken)
+            using HttpResponseMessage httpResponse =
+                await _httpClient.GetResponseAsync(requestMessage, cancellationToken)
                 .ConfigureAwait(false);
 
             if (!httpResponse.IsSuccessStatusCode)
@@ -143,58 +121,6 @@ namespace EPVV_CBR_RU
                     .ConfigureAwait(false);
 
                 throw ExceptionsParser.Parse(failedApiResponse);
-            }
-
-            if (httpResponse.Content is null)
-            {
-                throw new RequestException(
-                    message: "Response doesn't contain any content",
-                    httpResponse.StatusCode);
-            }
-
-            try
-            {
-                await httpResponse.Content.CopyToAsync(destination)
-                    .ConfigureAwait(false);
-            }
-            catch (Exception exception)
-            {
-                throw new RequestException(
-                    message: "Exception during file download",
-                    httpResponse.StatusCode,
-                    exception);
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static async Task<HttpResponseMessage> GetResponseAsync(
-                HttpClient httpClient,
-                HttpRequestMessage requestMessage,
-                CancellationToken cancellationToken)
-        {
-            HttpResponseMessage? httpResponse;
-
-            try
-            {
-                httpResponse = await httpClient
-                    .SendAsync(requestMessage, cancellationToken)
-                    .ConfigureAwait(false);
-            }
-            catch (TaskCanceledException exception)
-            {
-                if (cancellationToken.IsCancellationRequested) { throw; }
-
-                throw new RequestException(
-                    message: "Request timed out",
-                    innerException: exception
-                );
-            }
-            catch (Exception exception)
-            {
-                throw new RequestException(
-                    message: "Exception during file download",
-                    innerException: exception
-                );
             }
 
             return httpResponse;

@@ -1,5 +1,5 @@
 ﻿using EPVV_CBR_RU.Exceptions;
-using EPVV_CBR_RU.Requests.Abstractions;
+using EPVV_CBR_RU.Requests;
 
 namespace EPVV_CBR_RU
 {
@@ -34,13 +34,13 @@ namespace EPVV_CBR_RU
         /// <summary>
         /// Метод для загрузки файлов
         /// </summary>
-        /// <param name="endpoint"></param>
+        /// <param name="path"></param>
         /// <param name="destination"></param>
         /// <param name="cancellationToken"></param>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         Task DownloadFileAsync(
-            string endpoint,
+            string path,
             Stream destination,
             CancellationToken cancellationToken = default);
     }
