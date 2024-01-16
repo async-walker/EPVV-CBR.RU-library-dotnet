@@ -1,4 +1,4 @@
-﻿namespace EPVV_CBR_RU.Requests.Abstractions
+﻿namespace EPVV_CBR_RU.Requests
 {
     /// <summary>
     /// Репрезентация запроса к API
