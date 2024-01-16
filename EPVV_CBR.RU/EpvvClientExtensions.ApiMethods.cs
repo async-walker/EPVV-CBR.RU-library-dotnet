@@ -39,13 +39,7 @@ namespace EPVV_CBR_RU
             await client.ThrowIfNull()
                 .MakeRequestAsync(
                     request: new CreateDraftMessageRequest(
-                        task: task,
-                        title: title,
-                        text: text,
-                        files: files,
-                        correlationId: correlationId,
-                        groupId: groupId,
-                        receivers: receivers),
+                        task, title, text, files, correlationId, groupId, receivers),
                     cancellationToken)
                 .ConfigureAwait(false);
 
@@ -115,7 +109,7 @@ namespace EPVV_CBR_RU
         }
 
         /// <summary>
-        /// Поиск сообщений по фильтрам
+        /// Получение всех сообщений по фильтрам (не более 100 сообщений за один запрос)
         /// </summary>
         /// <param name="client"></param>
         /// <param name="filters"></param>
@@ -132,7 +126,7 @@ namespace EPVV_CBR_RU
                .ConfigureAwait(false);
 
         /// <summary>
-        /// Поиск информации о сообщении по его ID
+        /// Получение данных о сообщении по его ID
         /// </summary>
         /// <param name="client"></param>
         /// <param name="messageId"></param>
@@ -165,7 +159,7 @@ namespace EPVV_CBR_RU
             var path = Path.Combine(directoryToSave, $"{messageId}.zip");
 
             await client.DownloadFileAsync(
-                endpoint: $"messages/{messageId}/download",
+                path: $"messages/{messageId}/download",
                 destination: new FileStream(path, FileMode.OpenOrCreate),
                 cancellationToken)
                 .ConfigureAwait(false);
@@ -174,7 +168,7 @@ namespace EPVV_CBR_RU
         }
 
         /// <summary>
-        /// Поиск информации о конкретном файле из сообщения
+        /// Получение данных о конкретном файле из сообщения
         /// </summary>
         /// <param name="client"></param>
         /// <param name="messageId"></param>
@@ -213,7 +207,96 @@ namespace EPVV_CBR_RU
             var path = Path.Combine(directoryToSave, message.Name);
 
             await client.DownloadFileAsync(
-                endpoint: $"messages/{messageId}/files/{fileId}/download",
+                path: $"messages/{messageId}/files/{fileId}/download",
+                destination: new FileStream(path, FileMode.OpenOrCreate),
+                cancellationToken)
+                .ConfigureAwait(false);
+
+            return path;
+        }
+
+        /// <summary>
+        /// Получение данных о всех квитанциях на сообщение
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="messageId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<List<Receipt>> GetReceiptsInfoAsync(
+            this IEpvvClient client,
+            string messageId,
+            CancellationToken cancellationToken = default) =>
+            await client.ThrowIfNull()
+               .MakeRequestAsync(
+                   request: new GetReceiptsInfoRequest(messageId),
+                   cancellationToken)
+               .ConfigureAwait(false);
+
+        /// <summary>
+        /// Получение данных о квитанции на сообщение по его ID
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="messageId"></param>
+        /// <param name="receiptId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<Receipt> GetReceiptByIdAsync(
+            this IEpvvClient client,
+            string messageId,
+            string receiptId,
+            CancellationToken cancellationToken = default) =>
+            await client.ThrowIfNull()
+               .MakeRequestAsync(
+                   request: new GetReceiptByIdRequest(messageId, receiptId),
+                   cancellationToken)
+               .ConfigureAwait(false);
+
+        /// <summary>
+        /// Получение данных о файле квитанции на сообщение
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="messageId"></param>
+        /// <param name="receiptId"></param>
+        /// <param name="fileId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<UploadedFile> GetReceiptFileInfoAsync(
+            this IEpvvClient client,
+            string messageId,
+            string receiptId,
+            string fileId,
+            CancellationToken cancellationToken = default) =>
+            await client.ThrowIfNull()
+               .MakeRequestAsync(
+                   request: new GetReceiptFileInfoRequest(messageId, receiptId, fileId),
+                   cancellationToken)
+               .ConfigureAwait(false);
+
+        /// <summary>
+        /// Скачивание файла квитанции на сообщение
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="messageId"></param>
+        /// <param name="receiptId"></param>
+        /// <param name="fileId"></param>
+        /// <param name="directoryToSave"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<string> DownloadReceiptAsync(
+            this IEpvvClient client,
+            string messageId,
+            string receiptId,
+            string fileId,
+            string directoryToSave,
+            CancellationToken cancellationToken = default)
+        {
+            var receipt = await client.GetReceiptFileInfoAsync(
+                messageId, receiptId, fileId, cancellationToken);
+
+            var path = Path.Combine(directoryToSave, receipt.Name);
+
+            await client.DownloadFileAsync(
+                path: $"messages/{messageId}/receipts/{receiptId}/files/{fileId}/download",
                 destination: new FileStream(path, FileMode.OpenOrCreate),
                 cancellationToken)
                 .ConfigureAwait(false);
