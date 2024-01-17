@@ -1,10 +1,9 @@
-﻿using EPVV_CBR_RU.Exceptions;
-using EPVV_CBR_RU.Extensions;
+﻿using EPVV_CBR_RU.Extensions;
+using EPVV_CBR_RU.Requests.Methods.DeleteMessages;
 using EPVV_CBR_RU.Requests.Methods.GetMessagesInfo;
 using EPVV_CBR_RU.Requests.Methods.SendMessages;
 using EPVV_CBR_RU.Types;
 using EPVV_CBR_RU.Types.Responses;
-using System.Net;
 
 namespace EPVV_CBR_RU
 {
@@ -90,23 +89,12 @@ namespace EPVV_CBR_RU
         public static async Task ConfirmSendMessage(
             this IEpvvClient client,
             string messageId,
-            CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                await client.ThrowIfNull()
-                   .MakeRequestAsync(
-                       request: new ConfirmSendMessageRequest(messageId),
-                       cancellationToken)
-                   .ConfigureAwait(false);
-            }
-            catch (RequestException ex)
-            {
-                if (ex.HttpStatusCode is HttpStatusCode.OK)
-                    return;
-                else throw;
-            }
-        }
+            CancellationToken cancellationToken = default) =>
+        await client.ThrowIfNull()
+            .MakeRequestAsync(
+                request: new ConfirmSendMessageRequest(messageId),
+                cancellationToken)
+            .ConfigureAwait(false);
 
         /// <summary>
         /// Получение всех сообщений по фильтрам (не более 100 сообщений за один запрос)
@@ -303,5 +291,41 @@ namespace EPVV_CBR_RU
 
             return path;
         }
+
+        /// <summary>
+        /// Удаление сообщения по его ID
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="messageId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task DeleteMessageByIdAsync(
+            this IEpvvClient client,
+            string messageId,
+            CancellationToken cancellationToken = default) =>
+            await client.ThrowIfNull()
+               .MakeRequestAsync(
+                   request: new DeleteMessageRequest(messageId),
+                   cancellationToken)
+               .ConfigureAwait(false);
+
+        /// <summary>
+        /// Удаление конкретного файла или отмена сессии отправки
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="messageId"></param>
+        /// <param name="fileId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task DeleteFileOrSessionAsync(
+            this IEpvvClient client,
+            string messageId,
+            string fileId,
+            CancellationToken cancellationToken = default) =>
+            await client.ThrowIfNull()
+               .MakeRequestAsync(
+                   request: new DeleteFileOrSessionRequest(messageId, fileId),
+                   cancellationToken)
+               .ConfigureAwait(false);
     }
 }

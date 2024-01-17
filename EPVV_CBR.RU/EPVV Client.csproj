@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Requests\Methods\DeleteMessages\" />
     <Folder Include="Requests\Methods\GetReferenceInfo\" />
   </ItemGroup>
 
