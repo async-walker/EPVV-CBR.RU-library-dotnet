@@ -64,7 +64,7 @@ namespace EPVV_Client.Tests
         }
 
         [Fact]
-        public async void Create_Then_Upload_And_Confirm_Send_Message()
+        public async void Create_ThenUpload_AndConfirmSendMessage()
         {
             var draftMessage = await CreateDraftMessage();
 
@@ -115,7 +115,7 @@ namespace EPVV_Client.Tests
         [Theory]
         [InlineData("f30cbf11-8650-4883-be48-b5f30057d0bf", "MESSAGE_NOT_FOUND", true)]
         [InlineData("f30cbf11-8650-4883-be48-b5f30057d0bf", "MESSAGE_NOT_FOUND", false)]
-        public async void Exception_Message_Not_Found_Get_Message_Info_By_Id(
+        public async void ExceptionMessageNotFound_WhenGetMessageInfoById(
             string messageId, 
             string exceptedErrorCode, 
             bool testPortal)
@@ -209,7 +209,7 @@ namespace EPVV_Client.Tests
         }
 
         [Fact]
-        public async void Create_And_Then_Delete_Message()
+        public async void Create_ThenDeleteMessage()
         {
             var message = await CreateDraftMessage();
 
@@ -217,7 +217,7 @@ namespace EPVV_Client.Tests
         }
 
         [Fact]
-        public async void Create_Message_Then_Create_Upload_Session_And_Delete_Session()
+        public async void CreateMessage_ThenCreateUploadSession_AndDeleteSession()
         {
             var message = await CreateDraftMessage();
 
@@ -226,6 +226,42 @@ namespace EPVV_Client.Tests
 
             await _epvvClient.CreateUploadSessionAsync(messageId, fileId);
             await _epvvClient.DeleteFileOrSessionAsync(messageId, fileId);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData(DirectionExchangeType.Inbox)]
+        [InlineData(DirectionExchangeType.Outbox)]
+        [InlineData(DirectionExchangeType.Bidirectional)]
+        public async void GetGuideTasks(DirectionExchangeType? directionExchange)
+        {
+            var tasks = await _epvvClient.GetGuideTasksAsync(directionExchange);
+
+            Assert.True(tasks.Count > 0);
+        }
+
+        [Fact]
+        public async void ExceptionDirectionIncorrect_WhenGetGuideTasks()
+        {
+            try
+            {
+                var incorrectDirection = (DirectionExchangeType)3;
+
+                await _epvvClient.GetGuideTasksAsync(incorrectDirection);
+            }
+            catch (ApiRequestException ex)
+            {
+                Assert.Equal("DIRECTION_INCORRECT", ex.Code); // В ответ приходит ответ DERECTION_INCORRECT.
+                                                              // Как минимум по документации неправильно + неправильное написание на английском
+            }
+        }
+
+        [Fact]
+        public async void GetMyProfileInformation()
+        {
+            var profile = await _epvvClient.GetMyProfileAsync();
+
+            Assert.NotNull(profile);
         }
     }
 }
