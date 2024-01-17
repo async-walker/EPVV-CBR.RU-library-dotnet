@@ -1,6 +1,7 @@
 ﻿using EPVV_CBR_RU.Extensions;
 using EPVV_CBR_RU.Requests.Methods.DeleteMessages;
 using EPVV_CBR_RU.Requests.Methods.GetMessagesInfo;
+using EPVV_CBR_RU.Requests.Methods.GetReferenceInfo;
 using EPVV_CBR_RU.Requests.Methods.SendMessages;
 using EPVV_CBR_RU.Types;
 using EPVV_CBR_RU.Types.Responses;
@@ -325,6 +326,21 @@ namespace EPVV_CBR_RU
             await client.ThrowIfNull()
                .MakeRequestAsync(
                    request: new DeleteFileOrSessionRequest(messageId, fileId),
+                   cancellationToken)
+               .ConfigureAwait(false);
+
+        /// <summary>
+        /// Получение информации о своем профиле
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<ProfileInformation> GetMyProfile(
+            this IEpvvClient client,
+            CancellationToken cancellationToken = default) =>
+            await client.ThrowIfNull()
+               .MakeRequestAsync(
+                   request: new GetMyProfileRequest(),
                    cancellationToken)
                .ConfigureAwait(false);
     }
