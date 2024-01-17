@@ -1,16 +1,16 @@
-﻿namespace EPVV_CBR_RU.Requests
+﻿namespace EPVV_CBR_RU.Requests.Abstractions
 {
     /// <summary>
     /// Репрезентация запроса к API
     /// </summary>
-    public interface IRequest<TResponse>
+    public interface IRequest
     {
         /// <summary>
         /// HTTP метод, по которому передается запрос
         /// </summary>
         HttpMethod Method { get; }
         /// <summary>
-        /// Конечная точка, на которую передается запрос
+        /// Путь, куда передается запрос
         /// </summary>
         string Path { get; }
         /// <summary>

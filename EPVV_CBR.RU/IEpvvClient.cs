@@ -1,5 +1,5 @@
 ﻿using EPVV_CBR_RU.Exceptions;
-using EPVV_CBR_RU.Requests;
+using EPVV_CBR_RU.Requests.Abstractions;
 
 namespace EPVV_CBR_RU
 {
@@ -12,6 +12,16 @@ namespace EPVV_CBR_RU
         /// Экземпляр <see cref="IExceptionParser"/> для парсинга ошибок API
         /// </summary>
         IExceptionParser ExceptionsParser { get; set; }
+
+        /// <summary>
+        /// Отправка запроса к API без десериализации ответа
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task MakeRequestAsync(
+            IRequest request,
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Отправка запроса к API
