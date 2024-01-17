@@ -1,25 +1,27 @@
 ﻿namespace EPVV_CBR_RU.Exceptions
 {
     /// <summary>
-    /// 
+    /// Репрезентация ошибки API
     /// </summary>
     public class ApiRequestException : RequestException
     {
         /// <summary>
-        /// 
+        /// HTTP-код ошибки
         /// </summary>
         public virtual int HTTPStatus { get; }
+        
         /// <summary>
-        /// 
+        /// Код ошибки API
         /// </summary>
         public string Code { get; }
+        
         /// <summary>
-        /// 
+        /// Дополнительная информация об ошибке
         /// </summary>
         public object? MoreInfo { get; }
 
         /// <summary>
-        /// 
+        /// Инициализация нового экземпляра <see cref="ApiRequestException"/>
         /// </summary>
         /// <param name="message"></param>
         public ApiRequestException(string message)
@@ -27,7 +29,7 @@
         { }
 
         /// <summary>
-        /// 
+        /// Инициализация нового экземпляра <see cref="ApiRequestException"/>
         /// </summary>
         /// <param name="message"></param>
         /// <param name="httpStatus"></param>
@@ -36,7 +38,7 @@
             HTTPStatus = httpStatus;
 
         /// <summary>
-        /// 
+        /// Инициализация нового экземпляра <see cref="ApiRequestException"/>
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
@@ -45,7 +47,7 @@
         { }
 
         /// <summary>
-        /// 
+        /// Инициализация нового экземпляра <see cref="ApiRequestException"/>
         /// </summary>
         /// <param name="message"></param>
         /// <param name="httpStatus"></param>
@@ -55,7 +57,7 @@
             HTTPStatus = httpStatus;
 
         /// <summary>
-        /// 
+        /// Инициализация нового экземпляра <see cref="ApiRequestException"/>
         /// </summary>
         /// <param name="message"></param>
         /// <param name="httpStatus"></param>
@@ -74,7 +76,7 @@
         }
 
         /// <summary>
-        /// 
+        /// Инициализация нового экземпляра <see cref="ApiRequestException"/>
         /// </summary>
         /// <param name="message"></param>
         /// <param name="httpStatus"></param>
