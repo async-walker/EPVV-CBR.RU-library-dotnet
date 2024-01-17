@@ -11,7 +11,7 @@ namespace EPVV_CBR_RU
         const string TestPortalUrl = "https://portal5test.cbr.ru/back/rapi2";
         const string PortalUrl = "https://portal5.cbr.ru/back/rapi2";
 
-        private static bool _isTestPortal;
+        private readonly bool _isTestPortal;
 
         /// <summary>
         /// Базовый адрес в зависимости от выбранного типа портала
