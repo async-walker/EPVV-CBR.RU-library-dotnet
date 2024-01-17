@@ -1,6 +1,7 @@
 ﻿using EPVV_CBR_RU.Exceptions;
 using EPVV_CBR_RU.Extensions;
-using EPVV_CBR_RU.Requests;
+using EPVV_CBR_RU.Requests.Abstractions;
+using System.IO;
 
 namespace EPVV_CBR_RU
 {
@@ -29,6 +30,23 @@ namespace EPVV_CBR_RU
         }
 
         /// <inheritdoc/>
+        public virtual async Task MakeRequestAsync(
+            IRequest request, 
+            CancellationToken cancellationToken = default)
+        {
+            ArgumentNullException.ThrowIfNull(request);
+
+            var url = $"{_options.BaseAddress}/{request.Path}";
+
+            using var requestMessage =
+                new HttpRequestMessage(
+                    method: request.Method,
+                    requestUri: url);
+            
+            await GetAndHandleResponse(requestMessage, cancellationToken);
+        }
+
+        /// <inheritdoc/>
         public virtual async Task<TResponse> MakeRequestAsync<TResponse>(
             IRequest<TResponse> request, 
             CancellationToken cancellationToken = default)
@@ -39,7 +57,7 @@ namespace EPVV_CBR_RU
 
             var url = $"{_options.BaseAddress}/{path}";
 
-            using var requestMessage = 
+            using var requestMessage =
                 new HttpRequestMessage(
                     method: request.Method,
                     requestUri: url)
