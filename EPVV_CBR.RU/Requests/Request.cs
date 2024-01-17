@@ -30,6 +30,7 @@ namespace EPVV_CBR_RU.Requests
             Path = path;
         }
 
+        /// <inheritdoc/>
         public virtual HttpContent? ToHttpContent() =>
             new StringContent(
                 content: JsonConvert.SerializeObject(this),

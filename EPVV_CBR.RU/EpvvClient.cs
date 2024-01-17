@@ -1,7 +1,6 @@
 ﻿using EPVV_CBR_RU.Exceptions;
 using EPVV_CBR_RU.Extensions;
 using EPVV_CBR_RU.Requests.Abstractions;
-using System.IO;
 
 namespace EPVV_CBR_RU
 {
