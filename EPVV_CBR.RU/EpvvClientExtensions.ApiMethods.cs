@@ -4,6 +4,7 @@ using EPVV_CBR_RU.Requests.Methods.GetMessagesInfo;
 using EPVV_CBR_RU.Requests.Methods.GetReferenceInfo;
 using EPVV_CBR_RU.Requests.Methods.SendMessages;
 using EPVV_CBR_RU.Types;
+using EPVV_CBR_RU.Types.Enums;
 using EPVV_CBR_RU.Types.Responses;
 
 namespace EPVV_CBR_RU
@@ -330,12 +331,29 @@ namespace EPVV_CBR_RU
                .ConfigureAwait(false);
 
         /// <summary>
+        /// Получение справочника задач
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="directionExchange">Направление обмена по задаче (необязательно). Если параметр не указан, возвращается все задачи</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<List<GuideTask>> GetGuideTasksAsync(
+            this IEpvvClient client,
+            DirectionExchangeType? directionExchange = default,
+            CancellationToken cancellationToken = default) =>
+            await client.ThrowIfNull()
+               .MakeRequestAsync(
+                   request: new GetGuideTasksRequest(directionExchange),
+                   cancellationToken)
+               .ConfigureAwait(false);
+
+        /// <summary>
         /// Получение информации о своем профиле
         /// </summary>
         /// <param name="client"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<ProfileInformation> GetMyProfile(
+        public static async Task<ProfileInformation> GetMyProfileAsync(
             this IEpvvClient client,
             CancellationToken cancellationToken = default) =>
             await client.ThrowIfNull()
