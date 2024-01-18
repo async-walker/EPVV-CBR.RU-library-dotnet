@@ -148,9 +148,11 @@ namespace EPVV_CBR_RU
         {
             var path = Path.Combine(directoryToSave, $"{messageId}.zip");
 
+            using var destStream = new FileStream(path, FileMode.OpenOrCreate);
+
             await client.DownloadFileAsync(
                 path: $"messages/{messageId}/download",
-                destination: new FileStream(path, FileMode.OpenOrCreate),
+                destination: destStream,
                 cancellationToken)
                 .ConfigureAwait(false);
 
@@ -196,9 +198,11 @@ namespace EPVV_CBR_RU
 
             var path = Path.Combine(directoryToSave, message.Name);
 
+            using var destStream = new FileStream(path, FileMode.OpenOrCreate); 
+
             await client.DownloadFileAsync(
                 path: $"messages/{messageId}/files/{fileId}/download",
-                destination: new FileStream(path, FileMode.OpenOrCreate),
+                destination: destStream,
                 cancellationToken)
                 .ConfigureAwait(false);
 
@@ -285,9 +289,11 @@ namespace EPVV_CBR_RU
 
             var path = Path.Combine(directoryToSave, receipt.Name);
 
+            using var destStream = new FileStream(path, FileMode.OpenOrCreate);
+
             await client.DownloadFileAsync(
                 path: $"messages/{messageId}/receipts/{receiptId}/files/{fileId}/download",
-                destination: new FileStream(path, FileMode.OpenOrCreate),
+                destination: destStream,
                 cancellationToken)
                 .ConfigureAwait(false);
 
