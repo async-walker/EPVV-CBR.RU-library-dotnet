@@ -1,8 +1,12 @@
-﻿namespace EPVV_CBR_RU.Types.Enums
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+namespace EPVV_CBR_RU.Types.Enums
 {
     /// <summary>
     /// Тип файла
     /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum FileType
     {
         /// <summary>
