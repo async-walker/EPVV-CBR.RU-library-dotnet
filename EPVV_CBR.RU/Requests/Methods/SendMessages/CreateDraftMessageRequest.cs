@@ -5,7 +5,10 @@ using Newtonsoft.Json.Serialization;
 
 namespace EPVV_CBR_RU.Requests.Methods.SendMessages
 {
-    [JsonObject(MemberSerialization.OptIn, NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
+    /// <summary>
+    /// Репрезентация запроса для создания черновика сообщения
+    /// </summary>
+    [JsonObject]
     public class CreateDraftMessageRequest : RequestBase<DraftMessage>
     {
         /// <summary>
@@ -16,10 +19,12 @@ namespace EPVV_CBR_RU.Requests.Methods.SendMessages
         /// <summary>
         /// Идентификатор корреляции сообщения в формате UUID [16] (необязательно, указывается для формирования ответного сообщения для потоков, поддерживаемых данную функциональность)
         /// </summary>
+        [JsonProperty(Required = Required.AllowNull)]
         public string? CorrelationId { get; set; }
         /// <summary>
         /// Идентификатор группы сообщений в формате UUID [16] (необязательно, указывается для передачи информации о том, что сообщение является частью группы сообщений для потоков, поддерживаемых данную функциональность)
         /// </summary>
+        [JsonProperty(Required = Required.AllowNull)]
         public string? GroupId { get; set; }
         /// <summary>
         /// Название сообщения, отображается в интерфейсе
@@ -39,8 +44,19 @@ namespace EPVV_CBR_RU.Requests.Methods.SendMessages
         /// <summary>
         /// Получатели сообщения (необязательно, указывается для потоков адресной рассылки)
         /// </summary>
+        [JsonProperty(Required = Required.AllowNull)]
         public List<Receiver>? Receivers { get; set; }
 
+        /// <summary>
+        /// Инициализация нового <see cref="CreateDraftMessageRequest"/>
+        /// </summary>
+        /// <param name="task"></param>
+        /// <param name="title"></param>
+        /// <param name="text"></param>
+        /// <param name="files"></param>
+        /// <param name="correlationId"></param>
+        /// <param name="groupId"></param>
+        /// <param name="receivers"></param>
         public CreateDraftMessageRequest(
             string task,
             string title,
