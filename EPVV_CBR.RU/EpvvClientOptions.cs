@@ -8,8 +8,8 @@ namespace EPVV_CBR_RU
     /// </summary>
     public class EpvvClientOptions
     {
-        const string TestPortalUrl = "https://portal5test.cbr.ru/back/rapi2";
-        const string PortalUrl = "https://portal5.cbr.ru/back/rapi2";
+        const string TestPortalUrl = "https://portal5test.cbr.ru/back/rapi2/v2";
+        const string PortalUrl = "https://portal5.cbr.ru/back/rapi2/v2";
 
         private readonly bool _isTestPortal;
 
