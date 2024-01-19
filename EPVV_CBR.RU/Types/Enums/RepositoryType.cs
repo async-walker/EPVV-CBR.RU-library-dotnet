@@ -1,8 +1,12 @@
-﻿namespace EPVV_CBR_RU.Types.Enums
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+namespace EPVV_CBR_RU.Types.Enums
 {
     /// <summary>
     /// Тип репозитория
     /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum RepositoryType
     {
         /// <summary>
