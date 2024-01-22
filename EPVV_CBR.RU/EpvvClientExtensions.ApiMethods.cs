@@ -88,7 +88,7 @@ namespace EPVV_CBR_RU
         /// <param name="client"></param>
         /// <param name="messageId"></param>
         /// <param name="cancellationToken"></param>
-        public static async Task ConfirmSendMessage(
+        public static async Task ConfirmSendMessageAsync(
             this IEpvvClient client,
             string messageId,
             CancellationToken cancellationToken = default) =>
