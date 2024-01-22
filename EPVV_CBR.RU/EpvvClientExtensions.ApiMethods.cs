@@ -340,7 +340,7 @@ namespace EPVV_CBR_RU
         /// Получение справочника задач
         /// </summary>
         /// <param name="client"></param>
-        /// <param name="directionExchange">Направление обмена по задаче (необязательно). Если параметр не указан, возвращается все задачи</param>
+        /// <param name="directionExchange">Направление обмена по задаче (необязательно). Если параметр не указан, возвращаются все задачи</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public static async Task<List<GuideTask>> GetGuideTasksAsync(
@@ -359,13 +359,58 @@ namespace EPVV_CBR_RU
         /// <param name="client"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public static async Task<ProfileInformation> GetMyProfileAsync(
+        public static async Task<ProfileInfo> GetProfileInfoAsync(
             this IEpvvClient client,
             CancellationToken cancellationToken = default) =>
             await client.ThrowIfNull()
                .MakeRequestAsync(
-                   request: new GetMyProfileRequest(),
+                   request: new GetProfileInfoRequest(),
                    cancellationToken)
                .ConfigureAwait(false);
+
+        /// <summary>
+        /// Получение информации о квоте профиля
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<QuotaInfo> GetProfileQuotaAsync(
+            this IEpvvClient client,
+            CancellationToken cancellationToken = default) =>
+            await client.ThrowIfNull()
+                .MakeRequestAsync(
+                    request: new GetProfileQuotaRequest(),
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+        /// <summary>
+        /// Получение информации о технических оповещениях
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<List<NotificationInfo>> GetNotificationsAsync(
+            this IEpvvClient client,
+            CancellationToken cancellationToken = default) =>
+            await client.ThrowIfNull()
+                .MakeRequestAsync(
+                    request: new GetNotificationsRequest(),
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+        /// <summary>
+        /// Получение списка справочников
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<List<GuideInfo>> GetGuideListAsync(
+            this IEpvvClient client,
+            CancellationToken cancellationToken = default) =>
+             await client.ThrowIfNull()
+                .MakeRequestAsync(
+                    request: new GetGuideListRequest(),
+                    cancellationToken)
+                .ConfigureAwait(false);
     }
 }

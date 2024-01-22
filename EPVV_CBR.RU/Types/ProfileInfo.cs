@@ -3,7 +3,7 @@
     /// <summary>
     /// Репрезентация информации о профиле участника информационного обмена (десериализуется)
     /// </summary>
-    public class ProfileInformation
+    public class ProfileInfo
     {
         /// <summary>
         /// Краткое наименование компании
