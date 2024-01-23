@@ -19,7 +19,7 @@ namespace EPVV_CBR_RU.Types
         /// <summary>
         /// Тип файла
         /// </summary>
-        public FileType FileType { get; set; }
+        public FileType? FileType { get; set; }
         /// <summary>
         /// Описание файла (необязательно поле, для запросов и предписаний из Банка России содержит имя файла с расширением, однако может содержать запрещённые символы Windows)
         /// </summary>

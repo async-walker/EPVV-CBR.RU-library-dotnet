@@ -24,6 +24,8 @@ namespace EPVV_CBR_RU.Types.Enums
         /// <summary>
         /// Файл машиночитаемой доверенности
         /// </summary>
-        PowerOfAttorney
+        PowerOfAttorney,
+        Comment,
+        Passport
     }
 }
