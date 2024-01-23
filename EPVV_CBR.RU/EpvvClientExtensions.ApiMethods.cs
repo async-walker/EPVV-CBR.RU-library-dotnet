@@ -68,17 +68,17 @@ namespace EPVV_CBR_RU
         /// </summary>
         /// <param name="client"></param>
         /// <param name="sessionInfo"></param>
-        /// <param name="stream"></param>
+        /// <param name="source"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public static async Task<UploadedFile> UploadFileAsync(
             this IEpvvClient client,
             SessionInfo sessionInfo,
-            Stream stream,
+            Stream source,
             CancellationToken cancellationToken = default) =>
             await client.ThrowIfNull()
                .MakeRequestAsync(
-                   request: new UploadFileRequest(sessionInfo, stream),
+                   request: new UploadFileRequest(sessionInfo, source),
                    cancellationToken)
                .ConfigureAwait(false);
 
@@ -133,13 +133,13 @@ namespace EPVV_CBR_RU
                .ConfigureAwait(false);
 
         /// <summary>
-        /// Загрузка сообщения
+        /// Загрузка сообщения в пользовательскую директорию
         /// </summary>
         /// <param name="client"></param>
         /// <param name="messageId"></param>
         /// <param name="directoryToSave"></param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>Путь к скачанному архиву с сообщением</returns>
         public static async Task<string> DownloadMessageAsync(
             this IEpvvClient client,
             string messageId,
@@ -158,6 +158,24 @@ namespace EPVV_CBR_RU
 
             return path;
         }
+
+        /// <summary>
+        /// Загрузка сообщения в поток <see cref="Stream"/>
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="messageId"></param>
+        /// <param name="destination"></param>
+        /// <param name="cancellationToken"></param>
+        public static async Task DownloadMessageAsync(
+            this IEpvvClient client,
+            string messageId,
+            Stream destination,
+            CancellationToken cancellationToken = default) =>
+            await client.DownloadFileAsync(
+                path: $"messages/{messageId}/download",
+                destination,
+                cancellationToken)
+                .ConfigureAwait(false);
 
         /// <summary>
         /// Получение данных о конкретном файле из сообщения
@@ -179,7 +197,7 @@ namespace EPVV_CBR_RU
                .ConfigureAwait(false);
 
         /// <summary>
-        /// Скачивание конкретного файла из сообщения
+        /// Скачивание конкретного файла из сообщения в пользовательскую директорию
         /// </summary>
         /// <param name="client"></param>
         /// <param name="messageId"></param>
@@ -209,6 +227,27 @@ namespace EPVV_CBR_RU
             return path;
         }
 
+        /// <summary>
+        /// Скачивание конкретного файла из сообщения в поток <see cref="Stream"/>
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="messageId"></param>
+        /// <param name="fileId"></param>
+        /// <param name="destination"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task DownloadFileFromMessageAsync(
+            this IEpvvClient client,
+            string messageId,
+            string fileId,
+            Stream destination,
+            CancellationToken cancellationToken = default) =>
+            await client.DownloadFileAsync(
+                path: $"messages/{messageId}/files/{fileId}/download",
+                destination,
+                cancellationToken)
+                .ConfigureAwait(false);
+        
         /// <summary>
         /// Получение данных о всех квитанциях на сообщение
         /// </summary>
@@ -267,7 +306,7 @@ namespace EPVV_CBR_RU
                .ConfigureAwait(false);
 
         /// <summary>
-        /// Скачивание файла квитанции на сообщение
+        /// Скачивание файла квитанции на сообщение в пользовательскую директорию
         /// </summary>
         /// <param name="client"></param>
         /// <param name="messageId"></param>
@@ -299,6 +338,29 @@ namespace EPVV_CBR_RU
 
             return path;
         }
+
+        /// <summary>
+        /// Скачивание файла квитанции на сообщение в поток <see cref="Stream"/>
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="messageId"></param>
+        /// <param name="receiptId"></param>
+        /// <param name="fileId"></param>
+        /// <param name="destination"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task DownloadReceiptAsync(
+            this IEpvvClient client,
+            string messageId,
+            string receiptId,
+            string fileId,
+            Stream destination,
+            CancellationToken cancellationToken = default) =>
+            await client.DownloadFileAsync(
+                path: $"messages/{messageId}/receipts/{receiptId}/files/{fileId}/download",
+                destination,
+                cancellationToken)
+                .ConfigureAwait(false);
 
         /// <summary>
         /// Удаление сообщения по его ID
@@ -407,9 +469,28 @@ namespace EPVV_CBR_RU
         public static async Task<List<GuideInfo>> GetGuideListAsync(
             this IEpvvClient client,
             CancellationToken cancellationToken = default) =>
-             await client.ThrowIfNull()
+            await client.ThrowIfNull()
                 .MakeRequestAsync(
                     request: new GetGuideListRequest(),
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+        /// <summary>
+        /// Получение записей конкретного справочника
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="guideId"></param>
+        /// <param name="page"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<GuideRecordsInfo> GetGuideRecordsAsync(
+            this IEpvvClient client,
+            string guideId,
+            int? page = default,
+            CancellationToken cancellationToken = default) =>
+            await client.ThrowIfNull()
+                .MakeRequestAsync(
+                    request: new GetGuideRecordsRequest(guideId, page),
                     cancellationToken)
                 .ConfigureAwait(false);
     }
