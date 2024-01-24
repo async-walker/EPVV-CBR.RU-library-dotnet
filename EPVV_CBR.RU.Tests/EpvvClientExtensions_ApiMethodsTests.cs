@@ -12,9 +12,6 @@ namespace EPVV_Client.Tests
         const string DownloadPath = @"C:\EPVV_Lib";
         IEpvvClient _epvvClient = default!;
 
-        public EpvvClientExtensions_ApiMethodsTests() 
-            => SetEpvvClient();
-
         private void SetEpvvClient(bool useTestPortal = true)
         {
             var configuration = new ConfigurationBuilder()
@@ -36,6 +33,8 @@ namespace EPVV_Client.Tests
 
             _epvvClient = new EpvvClient(options);
         }
+
+        public EpvvClientExtensions_ApiMethodsTests() => SetEpvvClient(true);
 
         [Fact]
         public async Task<DraftMessage> CreateDraftMessage()
@@ -77,17 +76,17 @@ namespace EPVV_Client.Tests
                 await _epvvClient.UploadFileAsync(sessionInfo, stream);
             }
 
-            await _epvvClient.ConfirmSendMessage(draftMessage.Id);
+            await _epvvClient.ConfirmSendMessageAsync(draftMessage.Id);
         }
 
         [Theory]
-        [InlineData(true, default, default)]
-        [InlineData(false, default, default)]
-        [InlineData(false, MessageType.outbox, MessageStatus.registered)]
+        [InlineData(default, default, true)]
+        [InlineData(default, default, false)]
+        [InlineData(MessageType.outbox, MessageStatus.registered, false)]
         public async void GetMessagesInfoByFilters(
-            bool testPortal,
             MessageType? messageType,
-            MessageStatus? messageStatus)
+            MessageStatus? messageStatus,
+            bool testPortal)
         {
             SetEpvvClient(testPortal);
 
@@ -101,8 +100,8 @@ namespace EPVV_Client.Tests
         }
 
         [Theory]
-        [InlineData("a054c858-bff1-412f-bced-b0f3004f3fd2", true)]
-        [InlineData("6238594a-6115-4c7a-9cea-b0f800726fa9", false)]
+        [InlineData("79cd449b-f113-4826-95f6-b0fc00a3e325", true)]
+        [InlineData("3bcaab4f-ecfb-40de-95d1-b0ff00ce3171", false)]
         public async void GetMessageInfoById(string messageId, bool testPortal)
         {
             SetEpvvClient(testPortal);
@@ -175,37 +174,56 @@ namespace EPVV_Client.Tests
             Assert.NotNull(receipts);
         }
 
-        [Fact]
-        public async void GetReceiptById()
+        [Theory]
+        [InlineData("a054c858-bff1-412f-bced-b0f3004f3fd2", "729de497-be3f-438a-8296-b0f3004f9802", true)]
+        [InlineData("6238594a-6115-4c7a-9cea-b0f800726fa9", "018ac453-a904-4652-af20-b0f800728ea6", false)]
+        public async void GetReceiptById(
+            string messageId, 
+            string receiptId, 
+            bool testPortal)
         {
-            var receipt = await _epvvClient.GetReceiptByIdAsync(
-                messageId: "a054c858-bff1-412f-bced-b0f3004f3fd2",
-                receiptId: "729de497-be3f-438a-8296-b0f3004f9802");
+            SetEpvvClient(testPortal);
+
+            var receipt = await _epvvClient.GetReceiptByIdAsync(messageId, receiptId);
 
             Assert.NotNull(receipt);
         }
 
-        [Fact]
-        public async void GetReceiptFileInfo()
+        [Theory]
+        [InlineData("a054c858-bff1-412f-bced-b0f3004f3fd2", "9c3c35ff-a6a6-48ff-86fa-b0f3004fa540", "b1b0e4f1-2c77-4d5e-9310-18e39cb47190", true)]
+        [InlineData("6238594a-6115-4c7a-9cea-b0f800726fa9", "018ac453-a904-4652-af20-b0f800728ea6", "ccc20bef-7aa5-4b27-a225-5f2c910df4ee", false)]
+        public async void GetReceiptFileInfo(
+            string messageId,
+            string receiptId,
+            string fileId,
+            bool testPortal)
         {
-            var receiptFileInfo = await _epvvClient.GetReceiptFileInfoAsync(
-                messageId: "a054c858-bff1-412f-bced-b0f3004f3fd2",
-                receiptId: "9c3c35ff-a6a6-48ff-86fa-b0f3004fa540",
-                fileId: "b1b0e4f1-2c77-4d5e-9310-18e39cb47190");
+            SetEpvvClient(testPortal);
+
+            var receiptFileInfo = await _epvvClient.GetReceiptFileInfoAsync(messageId, receiptId, fileId);
 
             Assert.NotNull(receiptFileInfo);
         }
 
-        [Fact]
-        public async void DownloadReceipt()
+        [Theory]
+        [InlineData("a054c858-bff1-412f-bced-b0f3004f3fd2", "9c3c35ff-a6a6-48ff-86fa-b0f3004fa540", "b1b0e4f1-2c77-4d5e-9310-18e39cb47190", true)]
+        [InlineData("6238594a-6115-4c7a-9cea-b0f800726fa9", "018ac453-a904-4652-af20-b0f800728ea6", "ccc20bef-7aa5-4b27-a225-5f2c910df4ee", false)]
+        public async void DownloadReceipt(
+            string messageId, 
+            string receiptId, 
+            string fileId, 
+            bool testPortal)
         {
-            var path = await _epvvClient.DownloadReceiptAsync(
-                messageId: "a054c858-bff1-412f-bced-b0f3004f3fd2",
-                receiptId: "9c3c35ff-a6a6-48ff-86fa-b0f3004fa540",
-                fileId: "b1b0e4f1-2c77-4d5e-9310-18e39cb47190",
-                directoryToSave: DownloadPath);
+            SetEpvvClient(testPortal);
+
+            var directoryToSave = DownloadPath;
+            var path = await _epvvClient.DownloadReceiptAsync(messageId, receiptId, fileId, directoryToSave);
+
+            var ms = new MemoryStream();
+            await _epvvClient.DownloadReceiptAsync(messageId, receiptId, fileId, ms);
 
             Assert.True(File.Exists(path));
+            Assert.True(ms.Length > 0);
         }
 
         [Fact]
@@ -251,17 +269,66 @@ namespace EPVV_Client.Tests
             }
             catch (ApiRequestException ex)
             {
-                Assert.Equal("DIRECTION_INCORRECT", ex.Code); // В ответ приходит ответ DERECTION_INCORRECT.
+                Assert.Equal("DERECTION_INCORRECT", ex.Code); // В ответ приходит ответ DERECTION_INCORRECT, должно быть DIRECTION_INCORRECT.
                                                               // Как минимум по документации неправильно + неправильное написание на английском
             }
         }
 
         [Fact]
-        public async void GetMyProfileInformation()
+        public async void GetProfileInformation()
         {
-            var profile = await _epvvClient.GetMyProfileAsync();
+            var profileInfo = await _epvvClient.GetProfileInfoAsync();
 
-            Assert.NotNull(profile);
+            Assert.NotNull(profileInfo);
+        }
+        
+        [Fact]
+        public async void GetQuotaInformation()
+        {
+            var quotaInfo = await _epvvClient.GetProfileQuotaAsync();
+
+            Assert.NotNull(quotaInfo);
+        }
+
+        [Fact]
+        public async void GetNotificationsInformation()
+        {
+            var notifications = await _epvvClient.GetNotificationsAsync();
+
+            Assert.NotNull(notifications);
+        }
+
+        [Fact]
+        public async void GetGuideList()
+        {
+            SetEpvvClient(false);
+
+            var guideList = await _epvvClient.GetGuideListAsync();
+
+            Assert.NotNull(guideList);
+            Assert.True(guideList.Count > 0);
+        }
+
+        [Fact]
+        public async void GetGuideRecords()
+        {
+            SetEpvvClient(false);
+
+            var records = await _epvvClient.GetGuideRecordsAsync("64529d5a-b1d9-453c-96f3-f380ea577314", 2);
+
+            Assert.True(records.Items.Count > 0);
+        }
+
+        [Fact]
+        public async void DownloadGuide()
+        {
+            SetEpvvClient(false);
+
+            var path = Path.Combine(DownloadPath, "guide.zip");
+
+            using var fs = new FileStream(path, FileMode.Create);
+
+            await _epvvClient.DownloadGuideAsync("64529d5a-b1d9-453c-96f3-f380ea577314", fs);
         }
     }
 }

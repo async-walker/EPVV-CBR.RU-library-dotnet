@@ -58,7 +58,7 @@ namespace EPVV_Client.Tests
         public async void MakeRequestAsyncWithResponse()
         {
             var request = await _epvvClient.MakeRequestAsync(
-                new GetMyProfileRequest());
+                new GetProfileInfoRequest());
 
             Assert.NotNull(request);
         }
