@@ -6,6 +6,7 @@ using EPVV_CBR_RU.Requests.Methods.SendMessages;
 using EPVV_CBR_RU.Types;
 using EPVV_CBR_RU.Types.Enums;
 using EPVV_CBR_RU.Types.Responses;
+using System.IO;
 
 namespace EPVV_CBR_RU
 {
@@ -216,7 +217,7 @@ namespace EPVV_CBR_RU
 
             var path = Path.Combine(directoryToSave, message.Name);
 
-            using var destStream = new FileStream(path, FileMode.OpenOrCreate); 
+            using var destStream = new FileStream(path, FileMode.OpenOrCreate);
 
             await client.DownloadFileAsync(
                 path: $"messages/{messageId}/files/{fileId}/download",
@@ -247,7 +248,7 @@ namespace EPVV_CBR_RU
                 destination,
                 cancellationToken)
                 .ConfigureAwait(false);
-        
+
         /// <summary>
         /// Получение данных о всех квитанциях на сообщение
         /// </summary>
@@ -493,5 +494,53 @@ namespace EPVV_CBR_RU
                     request: new GetGuideRecordsRequest(guideId, page),
                     cancellationToken)
                 .ConfigureAwait(false);
+
+        /// <summary>
+        /// Скачивание справочника в пользовательскую директорию
+        /// </summary>
+        /// <param name="client">Клиент EPVV</param>
+        /// <param name="guideId">Уникальный идентификатор справочника в формате GUID</param>
+        /// <param name="directoryToSave">Директория, куда нужно сохранить архив</param>
+        /// <param name="guideName">Название справочника (без расширений файла)</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns></returns>
+        public static async Task DownloadGuideAsync(
+            this IEpvvClient client,
+            string guideId,
+            string directoryToSave,
+            string guideName,
+            CancellationToken cancellationToken = default)
+        {
+            var path = Path.Combine(directoryToSave, $"{guideName}.zip");
+
+            using var destStream = new FileStream(path, FileMode.OpenOrCreate);
+
+            await client.DownloadFileAsync(
+                    path: $"dictionares/{guideId}/download",
+                    destination: destStream,
+                    cancellationToken)
+                    .ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Скачивание справочника в поток <see cref="Stream"/>
+        /// </summary>
+        /// <param name="client">Клиент EPVV</param>
+        /// <param name="guideId">Уникальный идентификатор справочника в формате GUID</param>
+        /// <param name="destination">Поток назначения, в который будет передан двоичный поток вида application/octet-stream, содержащий zip-архив с двумя файлами в формате xml</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns></returns>
+        public static async Task DownloadGuideAsync(
+            this IEpvvClient client,
+            string guideId,
+            Stream destination,
+            CancellationToken cancellationToken = default)
+        {
+            await client.DownloadFileAsync(
+                    path: $"dictionaries/{guideId}/download",
+                    destination,
+                    cancellationToken)
+                    .ConfigureAwait(false);
+        }
     }
 }
