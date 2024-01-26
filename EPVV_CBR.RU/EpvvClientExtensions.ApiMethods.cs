@@ -346,7 +346,7 @@ namespace EPVV_CBR_RU
         /// <param name="messageId">Уникальный идентификатор сообщения в формате GUID</param>
         /// <param name="receiptId">Уникальный идентификатор квитанции в формате GUID</param>
         /// <param name="fileId">Уникальный идентификатор файла в формате GUID</param>
-        /// <param name="destination"></param>
+        /// <param name="destination">Пользовательский поток, в который будет передан массив байтов данных сообщения</param>
         /// <param name="cancellationToken">Токен отмены</param>
         /// <returns></returns>
         public static async Task DownloadReceiptAsync(
@@ -384,7 +384,7 @@ namespace EPVV_CBR_RU
         /// </summary>
         /// <param name="client">Клиент для запроса к ЕПВВ</param>
         /// <param name="messageId">Уникальный идентификатор сообщения в формате GUID</param>
-        /// <param name="fileId"></param>
+        /// <param name="fileId">Уникальный идентификатор файла в формате GUID</param>
         /// <param name="cancellationToken">Токен отмены</param>
         /// <returns></returns>
         public static async Task DeleteFileOrSessionAsync(
@@ -404,7 +404,7 @@ namespace EPVV_CBR_RU
         /// <param name="client">Клиент для запроса к ЕПВВ</param>
         /// <param name="directionExchange">Направление обмена по задаче (необязательно). Если параметр не указан, возвращаются все задачи</param>
         /// <param name="cancellationToken">Токен отмены</param>
-        /// <returns></returns>
+        /// <returns>Список <see cref="GuideTask"/></returns>
         public static async Task<List<GuideTask>> GetGuideTasksAsync(
             this IEpvvClient client,
             DirectionExchangeType? directionExchange = default,
@@ -420,7 +420,7 @@ namespace EPVV_CBR_RU
         /// </summary>
         /// <param name="client">Клиент для запроса к ЕПВВ</param>
         /// <param name="cancellationToken">Токен отмены</param>
-        /// <returns></returns>
+        /// <returns>Экземпляр <see cref="ProfileInfo"/></returns>
         public static async Task<ProfileInfo> GetProfileInfoAsync(
             this IEpvvClient client,
             CancellationToken cancellationToken = default) =>
@@ -435,7 +435,7 @@ namespace EPVV_CBR_RU
         /// </summary>
         /// <param name="client">Клиент для запроса к ЕПВВ</param>
         /// <param name="cancellationToken">Токен отмены</param>
-        /// <returns></returns>
+        /// <returns>Экземпляр <see cref="QuotaInfo"/></returns>
         public static async Task<QuotaInfo> GetProfileQuotaAsync(
             this IEpvvClient client,
             CancellationToken cancellationToken = default) =>
@@ -450,7 +450,7 @@ namespace EPVV_CBR_RU
         /// </summary>
         /// <param name="client">Клиент для запроса к ЕПВВ</param>
         /// <param name="cancellationToken">Токен отмены</param>
-        /// <returns></returns>
+        /// <returns>Список <see cref="NotificationInfo"/></returns>
         public static async Task<List<NotificationInfo>> GetNotificationsAsync(
             this IEpvvClient client,
             CancellationToken cancellationToken = default) =>
@@ -465,7 +465,7 @@ namespace EPVV_CBR_RU
         /// </summary>
         /// <param name="client">Клиент для запроса к ЕПВВ</param>
         /// <param name="cancellationToken">Токен отмены</param>
-        /// <returns></returns>
+        /// <returns>Список <see cref="GuideInfo"/></returns>
         public static async Task<List<GuideInfo>> GetGuideListAsync(
             this IEpvvClient client,
             CancellationToken cancellationToken = default) =>
@@ -476,11 +476,13 @@ namespace EPVV_CBR_RU
                 .ConfigureAwait(false);
 
         /// <summary>
-        /// Получение записей конкретного справочника
+        /// Получение записей конкретного справочника (не более 100 записей за один запрос)
         /// </summary>
         /// <param name="client">Клиент для запроса к ЕПВВ</param>
-        /// <param name="guideId"></param>
-        /// <param name="page"></param>
+        /// <param name="guideId">Уникальный идентификатор справочника в формате GUID</param>
+        /// <param name="page">
+        /// <para>Номер страницы запрашиваемого справочника.</para> 
+        /// <para>Если запрос страницы не указан, возвращается первая страница записей справочника. В случае некорректного номера страницы – ошибка</para></param>
         /// <param name="cancellationToken">Токен отмены</param>
         /// <returns></returns>
         public static async Task<GuideRecordsInfo> GetGuideRecordsAsync(
@@ -499,7 +501,7 @@ namespace EPVV_CBR_RU
         /// </summary>
         /// <param name="client">Клиент для запроса к ЕПВВ</param>
         /// <param name="guideId">Уникальный идентификатор справочника в формате GUID</param>
-        /// <param name="directoryToSave">Директория, куда нужно сохранить архив</param>
+        /// <param name="directoryToSave">Директория, куда следует сохранить архив</param>
         /// <param name="guideName">Название справочника (без расширений файла)</param>
         /// <param name="cancellationToken">Токен отмены</param>
         /// <returns></returns>

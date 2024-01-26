@@ -14,7 +14,7 @@ namespace EPVV_CBR_RU.Requests.Methods.SendMessages
         /// Инициализация загрузки файла на сервер
         /// </summary>
         /// <param name="sessionInfo">Сессия для загрузки файла</param>
-        /// <param name="stream">Поток с контентом</param>
+        /// <param name="source">Поток с контентом</param>
         public UploadFileRequest(SessionInfo sessionInfo, Stream source)
             : base(HttpMethod.Put, sessionInfo.UploadUrl) =>
             Stream = source;
